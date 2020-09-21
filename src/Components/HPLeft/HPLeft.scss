@@ -1,0 +1,47 @@
+.hpleft {
+  width: 250px;
+  transition: transform 0.2s ease-in-out;
+
+  .hpleft-top {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 30px;
+
+    .hpleft-name {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0 20px;
+      font-size: 0.9em;
+    }
+  }
+  .hpleft-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    .github-grad {
+      background-color: rgb(58, 58, 58);
+    }
+
+    .ig-grad {
+      background: radial-gradient(
+        circle at 30% 107%,
+        #fdf497 0%,
+        #fdf497 5%,
+        #fd5949 45%,
+        #d6249f 60%,
+        #285aeb 90%
+      );
+    }
+    button {
+      margin: 10px 0;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    transform: translateX(-300px);
+    width: 0;
+  }
+}

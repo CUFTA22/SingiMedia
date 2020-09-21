@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Eczar:wght@600&display=swap");
+a {
+  text-decoration: none !important;
+  color: #303030 !important;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background-color: white;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 80px;
+  object-fit: contain;
+  border-bottom: 1px solid lightgrey;
+  transition: all 0.7s ease;
+
+  #alert-dialog-slide-title {
+    width: 100%;
+    text-align: center;
+  }
+
+  .h-left {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+
+    span {
+      font-size: 1.5em;
+      font-family: "Eczar", serif;
+      color: #af1506;
+      margin-top: 6px;
+    }
+    .h-logo {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  .h-right {
+    .h-right2 {
+      width: 190px;
+      display: flex;
+      align-items: center;
+      user-select: none;
+      justify-content: flex-end;
+
+      div {
+        cursor: pointer;
+        margin-left: 10px;
+      }
+    }
+  }
+  .h-signIn {
+    cursor: pointer;
+    color: #303030bb;
+    width: 35px;
+    height: 35px;
+  }
+
+  @media only screen and (max-width: 1000px) {
+    padding: 0 40px;
+
+    .h-left {
+      span {
+        display: none;
+      }
+    }
+  }
+}
+
+.addPost {
+  width: 500px;
+  margin: 0 auto;
+
+  .addPost-prog {
+    height: 8px;
+  }
+  .addPost-input {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  div {
+    overflow: hidden;
+    div.MuiPaper-rounded {
+      border-radius: 7px;
+    }
+  }
+}
+
+#addPost-file {
+  padding: 10px 169px;
+  cursor: pointer;
+  margin-top: 40px;
+
+  &:hover {
+    transition: all 0.2s ease;
+    background-color: rgba(219, 219, 219, 0.692);
+  }
+}
+#upload-photo {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}

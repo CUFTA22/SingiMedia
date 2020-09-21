@@ -1,0 +1,14 @@
+.hpright {
+  width: 250px;
+  transition: transform 0.2s ease-in-out;
+
+  .hpright-line {
+    margin-top: 5px;
+    height: 1px;
+  }
+
+  @media only screen and (max-width: 1200px) {
+    transform: translateX(1000px);
+    width: 0;
+  }
+}
