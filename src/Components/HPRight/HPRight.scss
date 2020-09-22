@@ -12,3 +12,32 @@
     width: 0;
   }
 }
+
+article {
+  width: 250px;
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+
+  img {
+    width: 40%;
+  }
+  p {
+    margin: 0 10px;
+    font-size: 0.9em;
+  }
+}
+
+.hpright-avatars {
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    margin-top: 20px;
+    font-size: 1.2em;
+  }
+}

@@ -53,6 +53,7 @@ const ProfilePage = (props) => {
     photoURL = user.photoURL;
   }
   const [open, setOpen] = useState(false);
+  const [openError, setOpenError] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const [image, setImage] = useState(null);
@@ -67,7 +68,7 @@ const ProfilePage = (props) => {
     if (reason === "clickaway") {
       return;
     }
-
+    setOpenError(false);
     setOpen(false);
   };
 
@@ -90,7 +91,10 @@ const ProfilePage = (props) => {
         .updateProfile({
           displayName: username,
         })
-        .then(setOpen(true));
+        .then(setOpen(true))
+        .catch(() => {
+          setOpenError(true);
+        });
     }
     if (image) {
       const uploadTask = storage.ref(`imagesUser/${image.name}`).put(image);
@@ -119,10 +123,11 @@ const ProfilePage = (props) => {
                 .then(function () {
                   setOpen(true);
                 })
-                .catch(function (error) {
-                  console.log(error);
+                .catch(function () {
+                  setOpenError(true);
                 });
 
+              setOpenModal(false);
               setImage(null);
             });
         }
@@ -133,7 +138,7 @@ const ProfilePage = (props) => {
       auth.currentUser
         .updateEmail(mail)
         .then(setOpen(true))
-        .catch((error) => console.log(error.message));
+        .catch(() => setOpenError(true));
     }
   };
 
@@ -225,6 +230,12 @@ const ProfilePage = (props) => {
       <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
           Profile updated successfully!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={openError} autoHideDuration={4000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Error updating profile!
         </Alert>
       </Snackbar>
     </div>

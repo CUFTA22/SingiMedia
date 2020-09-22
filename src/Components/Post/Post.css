@@ -5,15 +5,21 @@
   margin-bottom: 50px;
   border-radius: 4px;
   transition: all 0.2s ease-in-out;
+  user-select: none;
 }
 
 .post-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 15px 15px;
 
   font-size: 0.9em;
   color: rgb(48, 48, 48);
+}
+.post-header div {
+  display: flex;
+  align-items: center;
 }
 .post-header h3 {
   font-weight: 600;

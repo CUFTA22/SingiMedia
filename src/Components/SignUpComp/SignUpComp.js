@@ -9,7 +9,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Fab from "@material-ui/core/Fab";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Icon from "@material-ui/core/Icon";
-import { auth, db } from "../../firebase";
+import { auth, db, signInWithGoogle } from "../../firebase";
 import { loadCSS } from "fg-loadcss";
 import "./SignUpComp.scss";
 import Visibility from "@material-ui/icons/Visibility";
@@ -191,6 +191,18 @@ const SignUpComp = () => {
     }
   };
 
+  const handleGoogleSubmit = () => {
+    signInWithGoogle()
+      .then((authUser) => {
+        db.collection("users").doc(authUser.user.uid).set({
+          rank: "Google User 🌐",
+        });
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   return (
     <form className={classes.root} noValidate autoComplete="off">
       <div className="signup-dbl">
@@ -298,7 +310,12 @@ const SignUpComp = () => {
           <PersonAddIcon className={classes.extendedIcon} />
           Sign Up
         </Fab>
-        <Fab className="google-grad" color="primary" aria-label="add">
+        <Fab
+          onClick={handleGoogleSubmit}
+          className="google-grad"
+          color="primary"
+          aria-label="add"
+        >
           <Icon className="fab fa-google" style={{ color: "white" }} />
         </Fab>
       </div>

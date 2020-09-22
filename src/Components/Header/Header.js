@@ -194,8 +194,10 @@ const Header = () => {
       </Dialog>
 
       <div className="h-left">
-        <Logo className="h-logo" />
-        <span>Singi Media</span>
+        <a href="/">
+          <Logo className="h-logo" />
+          <span>Singi Media</span>
+        </a>
       </div>
 
       <div className="h-right">

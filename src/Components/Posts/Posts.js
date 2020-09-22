@@ -3,7 +3,7 @@ import { db } from "../../firebase";
 import Post from "../Post/Post";
 import "./Posts.scss";
 
-export const Posts = ({ user }) => {
+export const Posts = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export const Posts = ({ user }) => {
         <Post
           key={id}
           postId={id}
-          user={user}
+          title={post.title}
           username={post.username}
           caption={post.caption}
           imageUrl={post.imageUrl}

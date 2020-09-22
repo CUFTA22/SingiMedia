@@ -22,6 +22,10 @@ const App = () => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUserExists(true);
+        db.collection("users").doc(authUser.uid).update({
+          displayName: authUser.displayName,
+          photoURL: authUser.photoURL,
+        });
 
         db.collection("users")
           .doc(`${authUser.uid}`)
