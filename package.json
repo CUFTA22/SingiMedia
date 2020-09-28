@@ -15,9 +15,11 @@
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-instagram-embed": "^1.5.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
-    "react-text-mask": "^5.4.3"
+    "react-text-mask": "^5.4.3",
+    "react-user-profile": "^1.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

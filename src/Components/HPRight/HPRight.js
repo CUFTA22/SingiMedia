@@ -60,7 +60,7 @@ const HPRight = () => {
             />
           ))}
         </AvatarGroup>
-        <span>{avatarGroup.length} user/s</span>
+        <span>{avatarGroup.length} user/s total</span>
       </div>
     </div>
   );

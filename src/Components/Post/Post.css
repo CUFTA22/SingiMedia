@@ -31,6 +31,11 @@
   box-shadow: 0px 0px 5px 1px lightgray;
 }
 
+.post-title {
+  text-align: center;
+  margin: 5px 0 10px 0;
+}
+
 .post-image {
   width: 100%;
   object-fit: contain;
@@ -79,5 +84,10 @@
 @media only screen and (max-width: 800px) {
   .post {
     margin: 15px 0;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .post {
+    border-radius: 0;
   }
 }

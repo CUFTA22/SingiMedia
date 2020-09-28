@@ -8,8 +8,7 @@
   }
 
   @media only screen and (max-width: 1200px) {
-    transform: translateX(1000px);
-    width: 0;
+    display: none;
   }
 }
 

@@ -166,7 +166,7 @@ const SignUpComp = () => {
             indexNumber: textmask,
             rank: "User 🥰",
           });
-          return authUser.user.updateProfile({
+          authUser.user.updateProfile({
             displayName: username,
           });
         })

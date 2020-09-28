@@ -52,6 +52,7 @@ const HPLeft = (props) => {
     displayName = user.displayName;
     photoURL = user.photoURL;
   }
+  console.log(user);
 
   const { rank, firstName, lastName } = props.props;
 
@@ -95,27 +96,26 @@ const HPLeft = (props) => {
         <Fab color="primary" onClick={() => alert("W.I.P")} size="medium">
           <HelpOutlineOutlinedIcon className={classes.margin} />
         </Fab>
-        <Fab
-          color="primary"
-          className="ig-grad"
-          onClick={() => alert("Dugme kinda sus")}
-          size="medium"
+        <a
+          href="https://www.instagram.com/mladi_dzoni/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <InstagramIcon className={classes.margin} />
-        </Fab>
-        <Fab
-          color="primary"
-          className="github-grad"
-          onClick={() => alert("U shall not see the code")}
-          size="medium"
+          <Fab color="primary" className="ig-grad" size="medium">
+            <InstagramIcon className={classes.margin} />
+          </Fab>
+        </a>
+        <a
+          href="https://github.com/CUFTA22/SingiMedia"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <GitHubIcon className={classes.margin} />
-        </Fab>
-        <Fab
-          size="medium"
-          color="primary"
-          onClick={() => alert("Nemas prijatelje")}
-        >
+          <Fab color="primary" className="github-grad" size="medium">
+            <GitHubIcon className={classes.margin} />
+          </Fab>
+        </a>
+
+        <Fab size="medium" color="primary" onClick={() => alert("W.I.P")}>
           <PeopleAltRoundedIcon className={classes.margin} />
         </Fab>
       </div>

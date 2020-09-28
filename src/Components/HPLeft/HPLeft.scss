@@ -41,7 +41,6 @@
   }
 
   @media only screen and (max-width: 800px) {
-    transform: translateX(-300px);
-    width: 0;
+    display: none;
   }
 }

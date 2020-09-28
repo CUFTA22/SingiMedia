@@ -1,9 +1,10 @@
 import React, { useState, useContext } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { ReactComponent as Logo } from "../../assets/SingiLogo.svg";
 import SendRoundedIcon from "@material-ui/icons/SendRounded";
 import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
 import Avatar from "@material-ui/core/Avatar";
+import Tooltip from "@material-ui/core/Tooltip";
 import "./Header.scss";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -26,6 +27,15 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import firebase from "firebase";
 import { db, storage } from "../../firebase";
 import Slide from "@material-ui/core/Slide";
+
+const LightTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: "rgba(0, 0, 0, 0.87)",
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}))(Tooltip);
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -212,15 +222,18 @@ const Header = () => {
             >
               <SendRoundedIcon />
             </Fab>
-            <Fab
-              size="small"
-              color="secondary"
-              aria-label="add"
-              className={classes.margin}
-              onClick={handleOpenModal}
-            >
-              <AddIcon />
-            </Fab>
+            <LightTooltip title="Click here to add post">
+              <Fab
+                size="small"
+                color="secondary"
+                aria-label="add"
+                className={classes.margin}
+                onClick={handleOpenModal}
+              >
+                <AddIcon />
+              </Fab>
+            </LightTooltip>
+
             <Avatar
               className="h-avatar"
               alt=""

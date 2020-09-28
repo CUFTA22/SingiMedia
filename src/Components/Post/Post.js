@@ -10,7 +10,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Divider from "@material-ui/core/Divider";
 
-const Post = ({ postId, username, caption, imageUrl, photoURL }) => {
+const Post = ({ postId, username, title, caption, imageUrl, photoURL }) => {
   const user = useContext(UserContext);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
@@ -69,7 +69,7 @@ const Post = ({ postId, username, caption, imageUrl, photoURL }) => {
           aria-label="more"
           aria-controls="long-menu"
           aria-haspopup="true"
-          onClick={handleClick}
+          // onClick={handleClick}
         >
           <MoreVertIcon />
         </IconButton>
@@ -85,12 +85,14 @@ const Post = ({ postId, username, caption, imageUrl, photoURL }) => {
           <MenuItem onClick={handleClose}>See Post</MenuItem>
         </Menu>
       </div>
+      <Divider className="hpright-line" />
+
+      <h2 className="post-title">{title}</h2>
       <img className="post-image" src={imageUrl} alt="Post" />
       <h4 className="post-text">
         <strong>{username}</strong> {caption}
       </h4>
       <Divider className="hpright-line" />
-
       <div className="post-comments">
         {comments.map((obj) => (
           <p key={obj.id}>
