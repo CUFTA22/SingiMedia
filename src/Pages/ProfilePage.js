@@ -22,9 +22,10 @@ import Button from "@material-ui/core/Button";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ClearSharpIcon from "@material-ui/icons/ClearSharp";
 import BurstModeSharpIcon from "@material-ui/icons/BurstModeSharp";
+import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
 import PetsIcon from "@material-ui/icons/Pets";
 import InstagramIcon from "@material-ui/icons/Instagram";
-import { auth, storage } from "../firebase";
+import { auth, storage, db } from "../firebase";
 import InstagramEmbed from "react-instagram-embed";
 
 function Alert(props) {
@@ -63,14 +64,16 @@ const ProfilePage = (props) => {
   const [open, setOpen] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openModalIG, setOpenModalIG] = useState(false);
 
   const [image, setImage] = useState(null);
   const [username, setUsername] = useState(displayName);
   const [mail, setMail] = useState(email);
+  const [igLink, setIgLink] = useState("");
 
   let { uid } = useParams();
 
-  const { rank, firstName, lastName } = props.userValues;
+  const { rank, firstName, lastName, igPostLink } = props.userValues;
 
   const handleClose = (reason) => {
     if (reason === "clickaway") {
@@ -80,75 +83,109 @@ const ProfilePage = (props) => {
     setOpen(false);
   };
 
+  const handleOpenModalIG = () => {
+    setOpenModalIG(true);
+  };
   const handleOpenModal = () => {
     setOpenModal(true);
   };
   const handleCloseModal = () => {
     setOpenModal(false);
+    setOpenModalIG(false);
   };
 
-  // const handleUploadIMG = (e) => {
-  //   if (e.target.files[0]) {
-  //     setImage(e.target.files[0]);
-  //   }
-  // };
+  const handleUploadIMG = (e) => {
+    console.log(image);
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
 
-  // const handleUpdateProfile = () => {
-  //   if (username) {
-  //     auth.currentUser
-  //       .updateProfile({
-  //         displayName: username,
-  //       })
-  //       .then(setOpen(true))
-  //       .catch(() => {
-  //         setOpenError(true);
-  //       });
-  //   }
-  //   if (image) {
-  //     const uploadTask = storage.ref(`imagesUser/${image.name}`).put(image);
+  const handleUpdateIMG = () => {
+    if (image) {
+      const uploadTask = storage.ref(`imagesUser/${image.name}`).put(image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          //! progress function ...
+        },
+        (error) => {
+          //! error function
+          setOpenError(true);
+        },
+        () => {
+          //! complete function
+          storage
+            .ref("imagesUser")
+            .child(image.name)
+            .getDownloadURL()
+            .then((url) => {
+              auth.currentUser
+                .updateProfile({
+                  photoURL: url,
+                })
+                .then(function () {
+                  setOpen(true);
+                })
+                .catch(function () {
+                  setOpenError(true);
+                });
 
-  //     uploadTask.on(
-  //       "state_changed",
-  //       (snapshot) => {
-  //         //! progress function ...
-  //       },
-  //       (error) => {
-  //         //! error function
-  //         alert(error);
-  //       },
-  //       () => {
-  //         //! complete function
+              setOpenModal(false);
+              setImage(null);
+            });
+        }
+      );
+    }
+  };
 
-  //         storage
-  //           .ref("imagesUser")
-  //           .child(image.name)
-  //           .getDownloadURL()
-  //           .then((url) => {
-  //             auth.currentUser
-  //               .updateProfile({
-  //                 photoURL: url,
-  //               })
-  //               .then(function () {
-  //                 setOpen(true);
-  //               })
-  //               .catch(function () {
-  //                 setOpenError(true);
-  //               });
+  const handleUpdateEmail = (e) => {
+    e.preventDefault();
+    if (mail) {
+      auth.currentUser
+        .updateEmail(mail)
+        .then(setOpen(true))
+        .catch(() => setOpenError(true));
+    } else {
+      setOpenError(true);
+    }
+  };
 
-  //             setOpenModal(false);
-  //             setImage(null);
-  //           });
-  //       }
-  //     );
-  //   }
+  const handleUpdateIGPost = (e) => {
+    e.preventDefault();
+    db.collection("users")
+      .doc(`${uid}`)
+      .update({
+        igPostLink: igLink,
+      })
+      .then(() => {
+        setIgLink("");
+        setOpen(true);
+      })
+      .catch(setOpenError(true));
+  };
 
-  //   if (mail) {
-  //     auth.currentUser
-  //       .updateEmail(mail)
-  //       .then(setOpen(true))
-  //       .catch(() => setOpenError(true));
-  //   }
-  // };
+  const handleUpdateUsername = (e) => {
+    e.preventDefault();
+    if (username) {
+      auth.currentUser
+        .updateProfile({
+          displayName: username,
+        })
+        .then(setOpen(true))
+        .catch(() => setOpenError(true));
+    } else {
+      setOpenError(true);
+    }
+  };
+
+  const handleDeleteProfile = (e) => {
+    e.preventDefault();
+
+    auth.currentUser.delete();
+
+    db.collection("users").doc(`${uid}`).delete();
+  };
 
   const newLocal2 = (
     <div>
@@ -161,31 +198,92 @@ const ProfilePage = (props) => {
       <DialogTitle id="alert-dialog-slide-title">Update Profile</DialogTitle>
       <Divider variant="middle" />
       <DialogContent>
-        <TextField
-          className="updateProf-input"
-          value={username || ""}
-          type="text"
-          label="Username"
-          onChange={(event) => setUsername(event.target.value)}
-        />
-        <TextField
-          className="updateProf-input"
-          value={mail || ""}
-          type="text"
-          label="Email"
-          onChange={(event) => setMail(event.target.value)}
-        />
         <div className="updateProf-img">
           <label id="updateProf-file" htmlFor="upload-photo">
-            Profile Picture
+            <Avatar
+              variant="circle"
+              alt={firstName + " " + lastName + "'s profile avatar"}
+              src={photoURL}
+              className={classes.large}
+            />
           </label>
           <input
-            // onChange={handleUploadIMG}
+            onChange={handleUploadIMG}
             type="file"
             name="photo"
             id="upload-photo"
           />
+          <Fab
+            id="handleUploadImage"
+            size="medium"
+            className={classes.margin}
+            color="primary"
+            aria-label="add"
+            onClick={handleUpdateIMG}
+          >
+            <CheckIcon />
+          </Fab>
         </div>
+        <div className="updateProf-line">
+          <TextField
+            className="updateProf-input"
+            value={username || ""}
+            type="text"
+            label="Username"
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <Fab
+            size="medium"
+            className={classes.margin}
+            color="primary"
+            aria-label="add"
+            onClick={handleUpdateUsername}
+          >
+            <CheckIcon />
+          </Fab>
+        </div>
+        <div className="updateProf-line">
+          <TextField
+            className="updateProf-input"
+            value={mail || ""}
+            type="text"
+            label="Email"
+            onChange={(event) => setMail(event.target.value)}
+          />
+          <Fab
+            size="medium"
+            className={classes.margin}
+            color="primary"
+            aria-label="add"
+            onClick={handleUpdateEmail}
+          >
+            <CheckIcon />
+          </Fab>
+        </div>
+      </DialogContent>
+    </div>
+  );
+
+  const newLocal3 = (
+    <div>
+      <LinearProgress
+        color="secondary"
+        className="updateProf-prog"
+        variant="determinate"
+        value={100}
+      />
+      <DialogTitle id="alert-dialog-slide-title">
+        Add Instagram Post
+      </DialogTitle>
+      <Divider variant="middle" />
+      <DialogContent>
+        <TextField
+          className="updateProf-input"
+          value={igLink}
+          type="text"
+          label="Instagram Post Link"
+          onChange={(event) => setIgLink(event.target.value)}
+        />
       </DialogContent>
       <DialogActions>
         <Fab
@@ -193,7 +291,7 @@ const ProfilePage = (props) => {
           className={classes.margin}
           color="primary"
           aria-label="add"
-          // onClick={handleUpdateProfile}
+          onClick={handleUpdateIGPost}
         >
           <CheckIcon />
         </Fab>
@@ -213,6 +311,16 @@ const ProfilePage = (props) => {
       >
         {newLocal2}
       </Dialog>
+      <Dialog
+        className="updateProf"
+        open={openModalIG}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseModal}
+        aria-labelledby="alert-dialog-slide-title"
+      >
+        {newLocal3}
+      </Dialog>
 
       <div className="profilePage-top">
         <div className="profilePage-top-left">
@@ -222,17 +330,21 @@ const ProfilePage = (props) => {
             </Button>
           </Link>
         </div>
-        <div className="profilePage-top-right">
-          <Button className="ig-btn" startIcon={<InstagramIcon />}>
-            Add IG post
-          </Button>
-          {uid === uidLocal ? (
+        {uid === uidLocal ? (
+          <div className="profilePage-top-right">
+            <Button
+              onClick={handleOpenModalIG}
+              className="ig-btn"
+              startIcon={<InstagramIcon />}
+            >
+              Add IG post
+            </Button>
             <SettingsIcon
               className="profile-editCog"
               onClick={handleOpenModal}
             />
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
       <div className="profilePage-main">
         <div className="profilePage-main-left">
@@ -242,7 +354,10 @@ const ProfilePage = (props) => {
             src={photoURL}
             className={classes.large}
           />
-          <div className="profilePage-main-left-name">{displayName}</div>
+          <div className="profilePage-main-left-name">
+            <p>{displayName}</p>
+            <p className="profilePage-main-left-rank">{rank}</p>
+          </div>
           <div className="profilePage-main-left-options">
             <div>
               <Button
@@ -255,14 +370,22 @@ const ProfilePage = (props) => {
                 Dancing Cat
               </Button>
             </div>
-
-            <Button
-              onClick={() => auth.signOut()}
-              className="back-btn-lgt"
-              startIcon={<ClearSharpIcon />}
-            >
-              Log Out
-            </Button>
+            <div>
+              <Button
+                onClick={handleDeleteProfile}
+                className="back-btn-lgt"
+                startIcon={<DeleteForeverRoundedIcon />}
+              >
+                Delete User
+              </Button>
+              <Button
+                onClick={() => auth.signOut()}
+                className="back-btn-lgt"
+                startIcon={<ClearSharpIcon />}
+              >
+                Log Out
+              </Button>
+            </div>
           </div>
         </div>
         <div className="profilePage-main-mid">
@@ -273,28 +396,32 @@ const ProfilePage = (props) => {
           <ProfilePosts displayName={displayName} />
         </div>
         <div className="profilePage-main-right">
-          <InstagramEmbed
-            url="https://www.instagram.com/p/B9170MWHQT-/?utm_source=ig_web_copy_link"
-            maxWidth={320}
-            hideCaption={false}
-            containerTagName="div"
-            protocol=""
-            injectScript
-            onLoading={() => {}}
-            onSuccess={() => {}}
-            onAfterRender={() => {}}
-            onFailure={() => {}}
-          />
+          {igPostLink ? (
+            <InstagramEmbed
+              url={igPostLink}
+              maxWidth={320}
+              hideCaption={false}
+              containerTagName="div"
+              protocol=""
+              injectScript
+              onLoading={() => {}}
+              onSuccess={() => {}}
+              onAfterRender={() => {}}
+              onFailure={() => <div>No post added</div>}
+            />
+          ) : user ? (
+            <div>Click on button above to add post</div>
+          ) : null}
         </div>
       </div>
 
-      <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
           Profile updated successfully!
         </Alert>
       </Snackbar>
 
-      <Snackbar open={openError} autoHideDuration={4000} onClose={handleClose}>
+      <Snackbar open={openError} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           Error updating profile!
         </Alert>

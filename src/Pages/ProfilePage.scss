@@ -88,6 +88,7 @@
         }
 
         .back-btn-lgt {
+          width: 100%;
           border-top: 1px solid rgba(155, 155, 155, 0.452);
           border-radius: 0px;
           color: red;
@@ -100,28 +101,14 @@
     .profilePage-main-mid {
       width: 650px;
 
-      .profilePage-main-mid-head {
-        width: 100%;
-        height: 200px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-
-        .profilePage-main-mid-head-left {
-          display: flex;
-          width: fit-content;
-          flex-direction: row;
-        }
-      }
-
       .profilePage-main-mid-posts {
         margin-top: 20px;
         width: 100%;
       }
     }
     .profilePage-main-right {
-      width: 200px;
+      text-align: center;
+      width: 320px;
     }
   }
 }
@@ -129,6 +116,18 @@
 .updateProf {
   width: 500px;
   margin: 0 auto;
+
+  .updateProf-line {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+
+    .updateProf-input {
+      width: 75%;
+    }
+  }
 
   .updateProf-prog {
     height: 8px;
@@ -141,26 +140,41 @@
     overflow: hidden;
 
     div.MuiPaper-rounded {
+      width: 500px;
       border-radius: 7px;
     }
   }
 }
 
 #updateProf-file {
+  width: 150px;
   text-align: center;
-  padding: 10px 0;
-  width: 90%;
+  height: fit-content;
   cursor: pointer;
   margin-top: 5px;
+  border-radius: 50%;
+
+  div {
+    width: 150px;
+    height: 150px;
+  }
 
   &:hover {
-    transition: all 0.2s ease;
-    background-color: rgba(219, 219, 219, 0.692);
+    transition: all 0.2s ease-in-out;
+    filter: brightness(0.5);
   }
 }
 .updateProf-img {
+  width: 100%;
+  height: fit-content;
   display: flex;
   justify-content: center;
+  align-items: center;
+
+  #handleUploadImage {
+    position: absolute;
+    right: 25px;
+  }
 }
 #upload-photo {
   opacity: 0;

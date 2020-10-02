@@ -69,7 +69,7 @@ const Post = ({ postId, username, title, caption, imageUrl, photoURL }) => {
           aria-label="more"
           aria-controls="long-menu"
           aria-haspopup="true"
-          // onClick={handleClick}
+          onClick={handleClick}
         >
           <MoreVertIcon />
         </IconButton>
