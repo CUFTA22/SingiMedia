@@ -1,20 +1,23 @@
 import React from "react";
-import Header from "../Components/Header/Header";
-import Posts from "../Components/Posts/Posts";
-import HPLeft from "../Components/HPLeft/HPLeft";
-import HPRight from "../Components/HPRight/HPRight";
-import "./HomePage.scss";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexGrow: 1,
+    borderRadius: 0,
+  },
+}));
 
 const HomePage = (props) => {
+  const classes = useStyles();
+
   return (
-    <div>
-      <Header />
-      <div className="main-content">
-        <HPLeft props={props.userValues} />
-        <Posts />
-        <HPRight />
-      </div>
-    </div>
+    <Paper className={classes.root} elevation={0}>
+      Hello World
+    </Paper>
   );
 };
 

@@ -1,292 +1,290 @@
-import React, { useState, useContext } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { ReactComponent as Logo } from "../../assets/SingiLogo.svg";
-import SendRoundedIcon from "@material-ui/icons/SendRounded";
-import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
+import React from "react";
+import {
+  AppBar,
+  Button,
+  Collapse,
+  Divider,
+  Drawer,
+  Fab,
+  fade,
+  IconButton,
+  InputBase,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
-import Tooltip from "@material-ui/core/Tooltip";
-import "./Header.scss";
-import Fab from "@material-ui/core/Fab";
+import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
+import MouseRoundedIcon from "@material-ui/icons/MouseRounded";
+import AddRoundedIcon from "@material-ui/icons/AddRounded";
+import PersonRoundedIcon from "@material-ui/icons/PersonRounded";
+import AppsRoundedIcon from "@material-ui/icons/AppsRounded";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import WbSunnyRoundedIcon from "@material-ui/icons/WbSunnyRounded";
+import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
+import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
+import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
+import Brightness2Icon from "@material-ui/icons/Brightness2";
+import MenuIcon from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
-import { UserContext } from "../../Providers/UserProvider";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import Popper from "@material-ui/core/Popper";
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuList from "@material-ui/core/MenuList";
-import { auth } from "../../firebase";
-import { Link } from "react-router-dom";
-import TextField from "@material-ui/core/TextField";
-import Divider from "@material-ui/core/Divider";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import firebase from "firebase";
-import { db, storage } from "../../firebase";
-import Slide from "@material-ui/core/Slide";
-
-const LightTooltip = withStyles((theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.common.white,
-    color: "rgba(0, 0, 0, 0.87)",
-    boxShadow: theme.shadows[1],
-    fontSize: 11,
-  },
-}))(Tooltip);
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="down" ref={ref} {...props} />;
-});
+import SearchIcon from "@material-ui/icons/Search";
+import { ReactComponent as SingiLogo } from "../../assets/SingiLogo.svg";
 
 const useStyles = makeStyles((theme) => ({
-  margin: {
-    margin: theme.spacing(1),
+  logo: {
+    width: "24px",
+    height: "24px",
+  },
+  appBarBottom: {
+    top: "auto",
+    bottom: 0,
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
+  },
+  appBarTop: {
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
+  list: {
+    width: 250,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  fabButton: {
+    position: "absolute",
+    zIndex: 1,
+    top: -30,
+    left: 0,
+    right: 0,
+    margin: "0 auto",
+  },
+  sectionDesktop: {
+    display: "flex",
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  search: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.black, 0.05),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.common.black, 0.1),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "auto",
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputRoot: {
+    color: "inherit",
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+  nested: {
+    paddingLeft: theme.spacing(4),
   },
 }));
 
-const Header = () => {
+const Header = ({ darkMode, setDarkMode }) => {
   const classes = useStyles();
-  const user = useContext(UserContext);
+  const [state, setState] = React.useState({ left: false });
+  const [openGC, setOpenGC] = React.useState(false);
 
-  let photoURL, displayName;
-  if (user) {
-    displayName = user.displayName;
-    photoURL = user.photoURL;
-  }
-
-  const [image, setImage] = useState(null);
-  const [progress, setProgress] = useState(0);
-  const [caption, setCaption] = useState("");
-  const [title, setTitle] = useState("");
-
-  const [openModal, setOpenModal] = React.useState(false);
-
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-  const handleCloseModal = () => {
-    setOpenModal(false);
+  const handleOpenGC = () => {
+    setOpenGC(!openGC);
   };
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
       return;
     }
 
-    setOpen(false);
+    setState({ ...state, [anchor]: open });
   };
-
-  function handleListKeyDown(event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    }
-  }
-
-  const handleUploadIMG = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
-
-  const handleUploadPost = () => {
-    const uploadTask = storage.ref(`images/${image.name}`).put(image);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        //! progress function ...
-
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgress(progress);
-      },
-      (error) => {
-        //! error function
-
-        console.error(error);
-        alert(error.message);
-      },
-      () => {
-        //! complete function
-
-        storage
-          .ref("images")
-          .child(image.name)
-          .getDownloadURL()
-          .then((url) => {
-            db.collection("posts").add({
-              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-              caption: caption,
-              title: title,
-              imageUrl: url,
-              photoURL: photoURL,
-              username: displayName,
-            });
-
-            setProgress(0);
-            setTitle("");
-            setCaption("");
-            setImage(null);
-          });
-      }
-    );
-  };
-
-  const newLocal1 = (
-    <div>
-      <LinearProgress
-        className="addPost-prog"
-        variant="determinate"
-        value={progress}
-      />
-      <DialogTitle id="alert-dialog-slide-title">Add Post</DialogTitle>
-      <Divider variant="middle" />
-      <DialogContent>
-        <TextField
-          className="addPost-input"
-          type="text"
-          label="Title"
-          onChange={(event) => setTitle(event.target.value)}
-        />
-        <TextField
-          className="addPost-input"
-          type="text"
-          label="Caption"
-          onChange={(event) => setCaption(event.target.value)}
-        />
-        <label id="addPost-file" htmlFor="upload-photo">
-          Browse
-        </label>
-        <input
-          onChange={handleUploadIMG}
-          type="file"
-          name="photo"
-          id="upload-photo"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Fab
-          size="medium"
-          className={classes.margin}
-          color="primary"
-          aria-label="add"
-          onClick={handleUploadPost}
-        >
-          <AddIcon />
-        </Fab>
-      </DialogActions>
-    </div>
-  );
 
   return (
-    <header>
-      <Dialog
-        className="addPost"
-        open={openModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseModal}
-        aria-labelledby="alert-dialog-slide-title"
-      >
-        {newLocal1}
-      </Dialog>
+    <>
+      <AppBar position="fixed" color="default" className={classes.appBarBottom}>
+        <Toolbar>
+          <IconButton
+            onClick={toggleDrawer("left", true)}
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Fab color="secondary" aria-label="add" className={classes.fabButton}>
+            <AddIcon />
+          </Fab>
+          <div className={classes.grow} />
+          <IconButton edge="end" color="inherit">
+            <PersonAddRoundedIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
 
-      <div className="h-left">
-        <a href="/">
-          <Logo className="h-logo" />
-          <span>Singi Media</span>
-        </a>
-      </div>
-
-      <div className="h-right">
-        {user ? (
-          <div className="h-right2">
-            <Fab
-              size="small"
-              color="secondary"
-              aria-label="add"
-              className={classes.margin}
-              onClick={() => alert("Dugme kinda sus")}
-            >
-              <SendRoundedIcon />
-            </Fab>
-            <LightTooltip title="Click here to add post">
-              <Fab
-                size="small"
-                color="secondary"
-                aria-label="add"
-                className={classes.margin}
-                onClick={handleOpenModal}
-              >
-                <AddIcon />
-              </Fab>
-            </LightTooltip>
-
-            <Avatar
-              className="h-avatar"
-              alt=""
-              src={photoURL}
-              ref={anchorRef}
-              onClick={handleToggle}
+      <AppBar position="static" color="default" className={classes.appBarTop}>
+        <Toolbar>
+          <IconButton
+            onClick={toggleDrawer("left", true)}
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="open drawer"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography className={classes.title} variant="h6" noWrap>
+            SingiMedia
+          </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
             />
-            <Popper
-              className="popper"
-              open={open}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              transition
-              disablePortal
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  style={{
-                    transformOrigin:
-                      placement === "bottom" ? "center top" : "center bottom",
-                  }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={handleClose}>
-                      <MenuList
-                        autoFocusItem={open}
-                        id="menu-list-grow"
-                        onKeyDown={handleListKeyDown}
-                      >
-                        <Link to={`/user/${user.uid}`}>
-                          <MenuItem>Profile</MenuItem>
-                        </Link>
-                        <MenuItem
-                          className="h-logout"
-                          onClick={() => auth.signOut()}
-                        >
-                          Log Out
-                        </MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
           </div>
-        ) : (
-          <Link to="/signin">
-            <PersonAddRoundedIcon className="h-signIn" />
-          </Link>
-        )}
-      </div>
-    </header>
+          <div className={classes.grow} />
+          <div className={classes.sectionDesktop}>
+            <Button color="primary" variant="contained">
+              Sign In
+            </Button>
+          </div>
+        </Toolbar>
+      </AppBar>
+
+      <Drawer
+        anchor="left"
+        open={state["left"]}
+        onClose={toggleDrawer("left", false)}
+      >
+        <div
+          className={classes.list}
+          role="presentation"
+          onKeyDown={toggleDrawer("left", false)}
+        >
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <SingiLogo className={classes.logo} />
+              </ListItemIcon>
+              <ListItemText primary={"SingiMedia"} />
+            </ListItem>
+
+            <Divider />
+
+            <ListItem button>
+              <ListItemIcon>
+                <HomeRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Home Page"} />
+            </ListItem>
+
+            <ListItem button>
+              <ListItemIcon>
+                <PersonRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"View Profile"} />
+            </ListItem>
+
+            <ListItem button>
+              <ListItemIcon>
+                <AddRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Add a Post"} />
+            </ListItem>
+
+            <ListItem button>
+              <ListItemIcon>
+                <EmojiEventsIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Earn a Badge"} />
+            </ListItem>
+
+            <Divider />
+
+            {darkMode ? (
+              <ListItem onClick={setDarkMode} button>
+                <ListItemIcon>
+                  <WbSunnyRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Light Mode"} />
+              </ListItem>
+            ) : (
+              <ListItem onClick={setDarkMode} button>
+                <ListItemIcon>
+                  <Brightness2Icon />
+                </ListItemIcon>
+                <ListItemText primary={"Night Mode"} />
+              </ListItem>
+            )}
+
+            <ListItem button onClick={handleOpenGC}>
+              <ListItemIcon>
+                <SportsEsportsIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Game Center"} />
+              {openGC ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={openGC} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <AppsRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="ReacTacToe" />
+                </ListItem>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <MouseRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="React Clicker" />
+                </ListItem>
+              </List>
+            </Collapse>
+          </List>
+        </div>
+      </Drawer>
+    </>
   );
 };
 

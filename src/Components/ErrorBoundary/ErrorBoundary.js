@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./ErrorBoundary.scss";
 
 class ErrorBoundary extends Component {
   constructor() {
@@ -19,12 +18,7 @@ class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasErrored) {
-      return (
-        <div className="errorImg">
-          <div className="errorImgContainer"></div>
-          <div className="errorImgText">A Dog Ate This Page</div>
-        </div>
-      );
+      return <div>Error </div>;
     }
 
     return this.props.children;

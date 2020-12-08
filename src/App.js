@@ -1,84 +1,36 @@
-import React, { useState, lazy, useEffect, Suspense } from "react";
-import UserProvider from "./Providers/UserProvider";
+import React, { lazy, Suspense, useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { auth, db } from "./firebase";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
-import Spinner from "./Components/Spinner/Spinner";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Header from "./Components/Header/Header";
 
 const HomePage = lazy(() => import("./Pages/HomePage"));
 const SignIn = lazy(() => import("./Pages/SignIn"));
-const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
+// const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 
 const App = () => {
-  const [userExists, setUserExists] = useState(null);
-  const [userValues, setUserValues] = useState({
-    firstName: "",
-    lastName: "",
-    indexNumber: "",
-    rank: "",
+  const [darkMode, setDarkMode] = useState(true);
+  const theme = createMuiTheme({
+    palette: {
+      type: darkMode ? "dark" : "light",
+    },
   });
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        setUserExists(true);
-        db.collection("users").doc(authUser.uid).update({
-          displayName: authUser.displayName,
-          photoURL: authUser.photoURL,
-        });
-
-        db.collection("users")
-          .doc(`${authUser.uid}`)
-          .get()
-          .then((doc) => {
-            setUserValues({
-              firstName: doc.data().firstName,
-              lastName: doc.data().lastName,
-              indexNumber: doc.data().indexNumber,
-              rank: doc.data().rank,
-            });
-          });
-      } else {
-        setUserExists(false);
-        setUserValues({
-          firstName: "",
-          lastName: "",
-          indexNumber: "",
-          rank: "",
-        });
-      }
-    });
-
-    return () => {
-      //! cleanup
-      unsubscribe();
-    };
-  }, []);
-
   return (
-    <UserProvider>
+    <ThemeProvider theme={theme}>
+      <Header darkMode={darkMode} setDarkMode={() => setDarkMode(!darkMode)} />
       <Switch>
         <ErrorBoundary>
-          <Suspense fallback={<Spinner />}>
-            <Route
-              exact
-              path="/"
-              render={() => <HomePage userValues={userValues} />}
-            />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Route exact path="/" component={HomePage} />
             <Route
               exact
               path="/signin"
-              render={() => (userExists ? <Redirect to="/" /> : <SignIn />)}
-            />
-            <Route
-              exact
-              path="/user/:uid"
-              render={() => <ProfilePage userValues={userValues} />}
+              render={() => (false ? <Redirect to="/" /> : <SignIn />)}
             />
           </Suspense>
         </ErrorBoundary>
       </Switch>
-    </UserProvider>
+    </ThemeProvider>
   );
 };
 
