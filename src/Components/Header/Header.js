@@ -18,6 +18,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
+import SchoolRoundedIcon from "@material-ui/icons/SchoolRounded";
 import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
 import MouseRoundedIcon from "@material-ui/icons/MouseRounded";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
@@ -34,6 +35,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
 import { ReactComponent as SingiLogo } from "../../assets/SingiLogo.svg";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -41,14 +43,22 @@ const useStyles = makeStyles((theme) => ({
     height: "24px",
   },
   appBarBottom: {
-    top: "auto",
-    bottom: 0,
-    [theme.breakpoints.up("sm")]: {
+    position: "static",
+    [theme.breakpoints.down("xs")]: {
+      position: "fixed",
+      top: "auto",
+      bottom: 0,
+    },
+  },
+  forDesktop: {
+    display: "flex",
+    alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
       display: "none",
     },
   },
-  appBarTop: {
-    [theme.breakpoints.down("xs")]: {
+  forMobile: {
+    [theme.breakpoints.up("sm")]: {
       display: "none",
     },
   },
@@ -66,18 +76,15 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     margin: "0 auto",
   },
-  sectionDesktop: {
-    display: "flex",
-  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.black, 0.05),
+    backgroundColor: fade(theme.palette.common.white, 0.1),
     "&:hover": {
-      backgroundColor: fade(theme.palette.common.black, 0.1),
+      backgroundColor: fade(theme.palette.common.white, 0.15),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
@@ -112,6 +119,9 @@ const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
+  title: {
+    cursor: "pointer",
+  },
 }));
 
 const Header = ({ darkMode, setDarkMode }) => {
@@ -136,27 +146,7 @@ const Header = ({ darkMode, setDarkMode }) => {
 
   return (
     <>
-      <AppBar position="fixed" color="default" className={classes.appBarBottom}>
-        <Toolbar>
-          <IconButton
-            onClick={toggleDrawer("left", true)}
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Fab color="secondary" aria-label="add" className={classes.fabButton}>
-            <AddIcon />
-          </Fab>
-          <div className={classes.grow} />
-          <IconButton edge="end" color="inherit">
-            <PersonAddRoundedIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
-      <AppBar position="static" color="default" className={classes.appBarTop}>
+      <AppBar color="default" className={classes.appBarBottom}>
         <Toolbar>
           <IconButton
             onClick={toggleDrawer("left", true)}
@@ -167,27 +157,46 @@ const Header = ({ darkMode, setDarkMode }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            SingiMedia
-          </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+          <div className={classes.forDesktop}>
+            <Typography className={classes.title} variant="h6" noWrap>
+              <Link to="/">SingiMedia</Link>
+            </Typography>
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ "aria-label": "search" }}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
           </div>
+
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <Button color="primary" variant="contained">
-              Sign In
-            </Button>
+
+          <div className={classes.forDesktop}>
+            <Link to="/signin">
+              <Button color="primary" variant="contained">
+                Sign In
+              </Button>
+            </Link>
+          </div>
+
+          <div className={classes.forMobile}>
+            <Fab
+              color="secondary"
+              aria-label="add"
+              className={classes.fabButton}
+            >
+              <AddIcon />
+            </Fab>
+            <IconButton edge="end" color="inherit">
+              <PersonAddRoundedIcon />
+            </IconButton>
           </div>
         </Toolbar>
       </AppBar>
@@ -207,7 +216,7 @@ const Header = ({ darkMode, setDarkMode }) => {
               <ListItemIcon>
                 <SingiLogo className={classes.logo} />
               </ListItemIcon>
-              <ListItemText primary={"SingiMedia"} />
+              <ListItemText primary={"SingiMedia V1.0"} />
             </ListItem>
 
             <Divider />
@@ -238,6 +247,13 @@ const Header = ({ darkMode, setDarkMode }) => {
                 <EmojiEventsIcon />
               </ListItemIcon>
               <ListItemText primary={"Earn a Badge"} />
+            </ListItem>
+
+            <ListItem button>
+              <ListItemIcon>
+                <SchoolRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Start Learning"} />
             </ListItem>
 
             <Divider />

@@ -14,7 +14,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
-import { ReactComponent as Hacker } from "../assets/hacker.svg";
+import { ReactComponent as Hacker } from "../assets/hacker2.svg";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { Link } from "react-router-dom";
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   card: {
-    margin: "160px auto 0 auto",
+    margin: "120px auto 0 auto",
     width: 345,
     display: "flex",
     flexDirection: "column",
@@ -76,11 +76,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignIn = () => {
+const SignUp = () => {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     username: "",
     password: "",
+    repeat: "",
     showPassword: false,
     empty: false,
   });
@@ -116,6 +117,7 @@ const SignIn = () => {
                 onChange={handleChange("username")}
               />
             </FormControl>
+
             <FormControl>
               <InputLabel htmlFor="standard-adornment-password">
                 Password
@@ -138,6 +140,29 @@ const SignIn = () => {
                 }
               />
             </FormControl>
+
+            <FormControl>
+              <InputLabel htmlFor="standard-adornment-password">
+                Repeat Password
+              </InputLabel>
+              <Input
+                id="standard-adornment-password"
+                type={values.showPassword ? "text" : "password"}
+                value={values.repeat}
+                onChange={handleChange("repeat")}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
           </CardContent>
 
           <CardActions>
@@ -147,12 +172,12 @@ const SignIn = () => {
               variant="contained"
               color="primary"
             >
-              Sign In
+              Sign Up
             </Button>
           </CardActions>
-          <Link to="/signup"></Link>
+
           <Typography class={classes.switch}>
-            <Link to="/signup">Don't have an account?</Link>
+            <Link to="/signin">Already have an account?</Link>
           </Typography>
         </Card>
       </Paper>
@@ -160,4 +185,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
