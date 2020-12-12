@@ -17,7 +17,11 @@ import Button from "@material-ui/core/Button";
 import { ReactComponent as Hacker } from "../assets/hacker.svg";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { publicFetch } from "../axios";
+import { setUser } from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   bg: {
@@ -78,8 +82,11 @@ const useStyles = makeStyles((theme) => ({
 
 const SignIn = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const [values, setValues] = React.useState({
-    username: "",
+    displayName: "",
     password: "",
     showPassword: false,
     empty: false,
@@ -97,6 +104,39 @@ const SignIn = () => {
     event.preventDefault();
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    publicFetch
+      .post("/auth/login", {
+        displayName: values.displayName,
+        password: values.password,
+      })
+      .then((res) => {
+        enqueueSnackbar(`${res.data.message}`, {
+          variant: `success`,
+        });
+
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
+        localStorage.setItem("expiresAt", res.data.expiresAt);
+
+        dispatch(
+          setUser({
+            token: res.data.token,
+            expiresAt: res.data.expiresAt,
+            userInfo: res.data.userInfo,
+          })
+        );
+        history.push("/");
+      })
+      .catch((err) => {
+        enqueueSnackbar(`${err.response.data.message}`, {
+          variant: `${err.response.data.variant}`,
+        });
+      });
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <Paper className={classes.bg}>
@@ -112,8 +152,8 @@ const SignIn = () => {
               </InputLabel>
               <Input
                 id="standard-adornment-username"
-                value={values.username}
-                onChange={handleChange("username")}
+                value={values.displayName}
+                onChange={handleChange("displayName")}
               />
             </FormControl>
             <FormControl>
@@ -142,7 +182,7 @@ const SignIn = () => {
 
           <CardActions>
             <Button
-              onClick={() => console.log(window.innerWidth < 600)}
+              onClick={handleSubmit}
               size="large"
               variant="contained"
               color="primary"
@@ -151,7 +191,7 @@ const SignIn = () => {
             </Button>
           </CardActions>
           <Link to="/signup"></Link>
-          <Typography class={classes.switch}>
+          <Typography className={classes.switch}>
             <Link to="/signup">Don't have an account?</Link>
           </Typography>
         </Card>

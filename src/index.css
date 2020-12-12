@@ -25,9 +25,4 @@ code {
 a {
   color: unset;
   text-decoration: none;
-  cursor: none;
-}
-
-input {
-  cursor: none;
 }

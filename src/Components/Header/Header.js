@@ -1,6 +1,7 @@
 import React from "react";
 import {
   AppBar,
+  Badge,
   Button,
   Collapse,
   Divider,
@@ -14,11 +15,18 @@ import {
   ListItemIcon,
   ListItemText,
   makeStyles,
+  MenuList,
   Toolbar,
+  Tooltip,
   Typography,
+  withStyles,
 } from "@material-ui/core";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import Avatar from "@material-ui/core/Avatar";
+import AdjustIcon from "@material-ui/icons/Adjust";
 import SchoolRoundedIcon from "@material-ui/icons/SchoolRounded";
+import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
 import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
 import MouseRoundedIcon from "@material-ui/icons/MouseRounded";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
@@ -35,7 +43,57 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
 import { ReactComponent as SingiLogo } from "../../assets/SingiLogo.svg";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectIsAuthenticated, logout } from "../../redux/user/userSlice";
+import profileURL from "../../assets/user.svg";
+
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: -1.1,
+      left: -1.1,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "$ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.5)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}))(Badge);
+
+const StyledMenuItem = withStyles((theme) => ({}))(MenuItem);
+
+const StyledMenu = withStyles({})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "center",
+    }}
+    {...props}
+  />
+));
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -126,8 +184,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ darkMode, setDarkMode }) => {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [state, setState] = React.useState({ left: false });
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [openGC, setOpenGC] = React.useState(false);
+
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const handleOpenGC = () => {
     setOpenGC(!openGC);
@@ -179,24 +249,56 @@ const Header = ({ darkMode, setDarkMode }) => {
           <div className={classes.grow} />
 
           <div className={classes.forDesktop}>
-            <Link to="/signin">
-              <Button color="primary" variant="contained">
-                Sign In
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <StyledBadge
+                overlap="circle"
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                variant="dot"
+              >
+                <Avatar
+                  onClick={handleClickMenu}
+                  src={profileURL}
+                  alt={`SingiMedia profile avatar`}
+                />
+              </StyledBadge>
+            ) : (
+              <Link to="/signin">
+                <Button color="primary" variant="contained">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
 
           <div className={classes.forMobile}>
-            <Fab
-              color="secondary"
-              aria-label="add"
-              className={classes.fabButton}
-            >
+            <Fab color="primary" aria-label="add" className={classes.fabButton}>
               <AddIcon />
             </Fab>
-            <IconButton edge="end" color="inherit">
-              <PersonAddRoundedIcon />
-            </IconButton>
+            {isAuthenticated ? (
+              <StyledBadge
+                overlap="circle"
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                variant="dot"
+              >
+                <Avatar
+                  onClick={handleClickMenu}
+                  src={profileURL}
+                  alt={`SingiMedia profile avatar`}
+                />
+              </StyledBadge>
+            ) : (
+              <Link to="/signin">
+                <IconButton edge="end" color="inherit">
+                  <PersonAddRoundedIcon />
+                </IconButton>
+              </Link>
+            )}
           </div>
         </Toolbar>
       </AppBar>
@@ -221,14 +323,21 @@ const Header = ({ darkMode, setDarkMode }) => {
 
             <Divider />
 
-            <ListItem button>
+            <ListItem onClick={() => history.push("/")} button>
               <ListItemIcon>
                 <HomeRoundedIcon />
               </ListItemIcon>
               <ListItemText primary={"Home Page"} />
             </ListItem>
 
-            <ListItem button>
+            <ListItem onClick={() => history.push("/")} button>
+              <ListItemIcon>
+                <DashboardRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Dashboard"} />
+            </ListItem>
+
+            <ListItem onClick={() => history.push("/user")} button>
               <ListItemIcon>
                 <PersonRoundedIcon />
               </ListItemIcon>
@@ -259,12 +368,14 @@ const Header = ({ darkMode, setDarkMode }) => {
             <Divider />
 
             {darkMode ? (
-              <ListItem onClick={setDarkMode} button>
-                <ListItemIcon>
-                  <WbSunnyRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Light Mode"} />
-              </ListItem>
+              <Tooltip title="Don't do this to yourself" arrow placement="left">
+                <ListItem onClick={setDarkMode} button>
+                  <ListItemIcon>
+                    <WbSunnyRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Light Mode"} />
+                </ListItem>
+              </Tooltip>
             ) : (
               <ListItem onClick={setDarkMode} button>
                 <ListItemIcon>
@@ -273,6 +384,13 @@ const Header = ({ darkMode, setDarkMode }) => {
                 <ListItemText primary={"Night Mode"} />
               </ListItem>
             )}
+
+            <ListItem button>
+              <ListItemIcon>
+                <AdjustIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Custom Cursor"} />
+            </ListItem>
 
             <ListItem button onClick={handleOpenGC}>
               <ListItemIcon>
@@ -300,6 +418,31 @@ const Header = ({ darkMode, setDarkMode }) => {
           </List>
         </div>
       </Drawer>
+
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
+      >
+        <MenuItem
+          onClick={() => {
+            handleCloseMenu();
+            history.push("/user");
+          }}
+        >
+          Profile
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleCloseMenu();
+            dispatch(logout());
+          }}
+        >
+          Logout
+        </MenuItem>
+      </Menu>
     </>
   );
 };

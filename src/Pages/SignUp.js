@@ -17,7 +17,11 @@ import Button from "@material-ui/core/Button";
 import { ReactComponent as Hacker } from "../assets/hacker2.svg";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { publicFetch } from "../axios";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/user/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   bg: {
@@ -78,10 +82,13 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const [values, setValues] = React.useState({
-    username: "",
+    displayName: "",
     password: "",
-    repeat: "",
+    passwordCheck: "",
     showPassword: false,
     empty: false,
   });
@@ -96,6 +103,40 @@ const SignUp = () => {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    publicFetch
+      .post("/auth/register", {
+        displayName: values.displayName,
+        password: values.password,
+        passwordCheck: values.passwordCheck,
+      })
+      .then((res) => {
+        enqueueSnackbar(`${res.data.message}`, {
+          variant: `success`,
+        });
+
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
+        localStorage.setItem("expiresAt", res.data.expiresAt);
+
+        dispatch(
+          setUser({
+            token: res.data.token,
+            expiresAt: res.data.expiresAt,
+            userInfo: res.data.userInfo,
+          })
+        );
+        history.push("/");
+      })
+      .catch((err) => {
+        enqueueSnackbar(`${err.response.data.message}`, {
+          variant: `${err.response.data.variant}`,
+        });
+      });
   };
 
   return (
@@ -113,8 +154,8 @@ const SignUp = () => {
               </InputLabel>
               <Input
                 id="standard-adornment-username"
-                value={values.username}
-                onChange={handleChange("username")}
+                value={values.displayName}
+                onChange={handleChange("displayName")}
               />
             </FormControl>
 
@@ -142,14 +183,14 @@ const SignUp = () => {
             </FormControl>
 
             <FormControl>
-              <InputLabel htmlFor="standard-adornment-password">
+              <InputLabel htmlFor="standard-adornment-repeatPassword">
                 Repeat Password
               </InputLabel>
               <Input
-                id="standard-adornment-password"
+                id="standard-adornment-repeatPassword"
                 type={values.showPassword ? "text" : "password"}
-                value={values.repeat}
-                onChange={handleChange("repeat")}
+                value={values.passwordCheck}
+                onChange={handleChange("passwordCheck")}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -167,7 +208,7 @@ const SignUp = () => {
 
           <CardActions>
             <Button
-              onClick={() => console.log(window.innerWidth < 600)}
+              onClick={(e) => handleSubmit(e)}
               size="large"
               variant="contained"
               color="primary"
@@ -176,7 +217,7 @@ const SignUp = () => {
             </Button>
           </CardActions>
 
-          <Typography class={classes.switch}>
+          <Typography className={classes.switch}>
             <Link to="/signin">Already have an account?</Link>
           </Typography>
         </Card>
