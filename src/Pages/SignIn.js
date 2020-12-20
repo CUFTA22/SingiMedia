@@ -19,22 +19,22 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { Link, useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { publicFetch } from "../axios";
+import { axiosFetch } from "../axios";
 import { setUser } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   bg: {
-    display: "flex",
-    height: "calc(100vh - 64px)",
-    width: "100vw",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: -1,
+    width: "100%",
+    height: "100%",
     borderRadius: 0,
-    [theme.breakpoints.down("xs")]: {
-      height: "calc(100vh - 56px)",
-    },
   },
   card: {
-    margin: "160px auto 0 auto",
+    margin: "180px auto 0 auto",
     width: 345,
     display: "flex",
     flexDirection: "column",
@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
     height: "fit-content",
     paddingBottom: "15px",
     overflow: "visible",
+    [theme.breakpoints.down("xs")]: {
+      margin: "120px auto 0 auto",
+    },
   },
   fields: {
     display: "flex",
@@ -107,28 +110,28 @@ const SignIn = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    publicFetch
-      .post("/auth/login", {
-        displayName: values.displayName,
-        password: values.password,
-      })
+    axiosFetch
+      .post(
+        "/auth/login",
+        {
+          displayName: values.displayName,
+          password: values.password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         enqueueSnackbar(`${res.data.message}`, {
           variant: `success`,
         });
 
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
-        localStorage.setItem("expiresAt", res.data.expiresAt);
-
         dispatch(
           setUser({
-            token: res.data.token,
-            expiresAt: res.data.expiresAt,
+            accessToken: res.data.accessToken,
             userInfo: res.data.userInfo,
           })
         );
-        history.push("/");
       })
       .catch((err) => {
         enqueueSnackbar(`${err.response.data.message}`, {

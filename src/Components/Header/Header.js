@@ -3,50 +3,27 @@ import {
   AppBar,
   Badge,
   Button,
-  Collapse,
-  Divider,
-  Drawer,
   Fab,
   fade,
   IconButton,
   InputBase,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   makeStyles,
-  MenuList,
   Toolbar,
-  Tooltip,
   Typography,
   withStyles,
 } from "@material-ui/core";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Avatar from "@material-ui/core/Avatar";
-import AdjustIcon from "@material-ui/icons/Adjust";
-import SchoolRoundedIcon from "@material-ui/icons/SchoolRounded";
-import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
 import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
-import MouseRoundedIcon from "@material-ui/icons/MouseRounded";
-import AddRoundedIcon from "@material-ui/icons/AddRounded";
-import PersonRoundedIcon from "@material-ui/icons/PersonRounded";
-import AppsRoundedIcon from "@material-ui/icons/AppsRounded";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import WbSunnyRoundedIcon from "@material-ui/icons/WbSunnyRounded";
-import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
-import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
-import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
-import Brightness2Icon from "@material-ui/icons/Brightness2";
 import MenuIcon from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
-import { ReactComponent as SingiLogo } from "../../assets/SingiLogo.svg";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsAuthenticated, logout } from "../../redux/user/userSlice";
 import profileURL from "../../assets/user.svg";
+import DrawerComp from "../DrawerComp/DrawerComp";
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -77,29 +54,7 @@ const StyledBadge = withStyles((theme) => ({
   },
 }))(Badge);
 
-const StyledMenuItem = withStyles((theme) => ({}))(MenuItem);
-
-const StyledMenu = withStyles({})((props) => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "center",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "center",
-    }}
-    {...props}
-  />
-));
-
 const useStyles = makeStyles((theme) => ({
-  logo: {
-    width: "24px",
-    height: "24px",
-  },
   appBarBottom: {
     position: "static",
     [theme.breakpoints.down("xs")]: {
@@ -119,9 +74,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
-  },
-  list: {
-    width: 250,
   },
   grow: {
     flexGrow: 1,
@@ -174,22 +126,18 @@ const useStyles = makeStyles((theme) => ({
       width: "20ch",
     },
   },
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
   title: {
     cursor: "pointer",
   },
 }));
 
-const Header = ({ darkMode, setDarkMode }) => {
+const Header = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const [state, setState] = React.useState({ left: false });
+  const [state, setState] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openGC, setOpenGC] = React.useState(false);
 
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -199,11 +147,7 @@ const Header = ({ darkMode, setDarkMode }) => {
     setAnchorEl(null);
   };
 
-  const handleOpenGC = () => {
-    setOpenGC(!openGC);
-  };
-
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -211,7 +155,7 @@ const Header = ({ darkMode, setDarkMode }) => {
       return;
     }
 
-    setState({ ...state, [anchor]: open });
+    setState(open);
   };
 
   return (
@@ -219,7 +163,7 @@ const Header = ({ darkMode, setDarkMode }) => {
       <AppBar color="default" className={classes.appBarBottom}>
         <Toolbar>
           <IconButton
-            onClick={toggleDrawer("left", true)}
+            onClick={toggleDrawer(true)}
             edge="start"
             className={classes.menuButton}
             color="inherit"
@@ -303,121 +247,7 @@ const Header = ({ darkMode, setDarkMode }) => {
         </Toolbar>
       </AppBar>
 
-      <Drawer
-        anchor="left"
-        open={state["left"]}
-        onClose={toggleDrawer("left", false)}
-      >
-        <div
-          className={classes.list}
-          role="presentation"
-          onKeyDown={toggleDrawer("left", false)}
-        >
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <SingiLogo className={classes.logo} />
-              </ListItemIcon>
-              <ListItemText primary={"SingiMedia V1.0"} />
-            </ListItem>
-
-            <Divider />
-
-            <ListItem onClick={() => history.push("/")} button>
-              <ListItemIcon>
-                <HomeRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Home Page"} />
-            </ListItem>
-
-            <ListItem onClick={() => history.push("/")} button>
-              <ListItemIcon>
-                <DashboardRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Dashboard"} />
-            </ListItem>
-
-            <ListItem onClick={() => history.push("/user")} button>
-              <ListItemIcon>
-                <PersonRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={"View Profile"} />
-            </ListItem>
-
-            <ListItem button>
-              <ListItemIcon>
-                <AddRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Add a Post"} />
-            </ListItem>
-
-            <ListItem button>
-              <ListItemIcon>
-                <EmojiEventsIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Earn a Badge"} />
-            </ListItem>
-
-            <ListItem button>
-              <ListItemIcon>
-                <SchoolRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Start Learning"} />
-            </ListItem>
-
-            <Divider />
-
-            {darkMode ? (
-              <Tooltip title="Don't do this to yourself" arrow placement="left">
-                <ListItem onClick={setDarkMode} button>
-                  <ListItemIcon>
-                    <WbSunnyRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Light Mode"} />
-                </ListItem>
-              </Tooltip>
-            ) : (
-              <ListItem onClick={setDarkMode} button>
-                <ListItemIcon>
-                  <Brightness2Icon />
-                </ListItemIcon>
-                <ListItemText primary={"Night Mode"} />
-              </ListItem>
-            )}
-
-            <ListItem button>
-              <ListItemIcon>
-                <AdjustIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Custom Cursor"} />
-            </ListItem>
-
-            <ListItem button onClick={handleOpenGC}>
-              <ListItemIcon>
-                <SportsEsportsIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Game Center"} />
-              {openGC ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={openGC} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <AppsRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="ReacTacToe" />
-                </ListItem>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <MouseRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="React Clicker" />
-                </ListItem>
-              </List>
-            </Collapse>
-          </List>
-        </div>
-      </Drawer>
+      <DrawerComp toggleDrawer={toggleDrawer} state={state} />
 
       <Menu
         id="simple-menu"

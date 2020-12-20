@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const publicFetch = axios.create({
+const axiosFetch = axios.create({
   baseURL: "http://localhost:9000",
 });
+axiosFetch.defaults.withCredentials = true;
 
-export { publicFetch };
+export { axiosFetch };

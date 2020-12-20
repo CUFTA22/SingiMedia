@@ -1,12 +1,14 @@
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { SnackbarProvider } from "notistack";
 import Header from "./Components/Header/Header";
 import Spinner from "./Components/Spinner/Spinner";
-import { useSelector } from "react-redux";
-import { selectIsAuthenticated } from "./redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectIsAuthenticated, setUser } from "./redux/user/userSlice";
+import { selectDarkMode } from "./redux/utils/utilsSlice";
+import { axiosFetch } from "./axios";
 
 const HomePage = lazy(() => import("./Pages/HomePage"));
 const SignIn = lazy(() => import("./Pages/SignIn"));
@@ -15,12 +17,24 @@ const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 
 const App = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const [darkMode, setDarkMode] = useState(true);
+  const darkMode = useSelector(selectDarkMode);
+  const dispatch = useDispatch();
   const theme = createMuiTheme({
     palette: {
       type: darkMode ? "dark" : "light",
     },
   });
+
+  useEffect(() => {
+    axiosFetch.post("/auth/checkAuth").then((res) =>
+      dispatch(
+        setUser({
+          accessToken: res.data.accessToken,
+          userInfo: res.data.userInfo,
+        })
+      )
+    );
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -31,10 +45,7 @@ const App = () => {
           horizontal: "center",
         }}
       >
-        <Header
-          darkMode={darkMode}
-          setDarkMode={() => setDarkMode(!darkMode)}
-        />
+        <Header />
         <Switch>
           <ErrorBoundary>
             <Suspense fallback={<Spinner />}>

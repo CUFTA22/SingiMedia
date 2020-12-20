@@ -1,39 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { axiosFetch } from "../../axios";
 
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    token: localStorage.getItem("token"),
-    expiresAt: localStorage.getItem("expiresAt"),
-    userInfo: JSON.parse(localStorage.getItem("userInfo")),
+    accessToken: null,
+    userInfo: {
+      displayName: null,
+      isAdmin: null,
+    },
   },
   reducers: {
     setUser: (state, action) => {
-      state.token = action.payload.token;
-      state.expiresAt = action.payload.expiresAt;
+      state.accessToken = action.payload.token;
       state.userInfo = action.payload.userInfo;
     },
     logout: (state) => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("expiresAt");
-      localStorage.removeItem("userInfo");
+      state.accessToken = null;
+      state.userInfo.displayName = null;
+      state.userInfo.role = null;
 
-      state.token = null;
-      state.expiresAt = null;
-      state.userInfo = null;
+      axiosFetch.post("/auth/logout");
     },
   },
 });
 
 export const { setUser, logout } = userSlice.actions;
 
-export const selectUser = (state) => state.user.userInfo; // getCurrentUser
+export const selectUser = (state) => state.user.userInfo; // For profile page
 export const selectIsAuthenticated = (state) => {
-  if (!state.user.token || !state.user.expiresAt) {
-    return false;
-  }
-  return new Date().getTime() / 1000 < state.user.expiresAt;
+  return state.user.userInfo.displayName !== null;
 };
-export const selectIsAdmin = (state) => state.user.userInfo.role === "admin";
+export const selectIsAdmin = (state) => state.user.userInfo.isAdmin === "true";
 
 export default userSlice.reducer;
