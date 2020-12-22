@@ -3,6 +3,7 @@ import {
   AppBar,
   Badge,
   Button,
+  CircularProgress,
   Fab,
   fade,
   IconButton,
@@ -21,7 +22,11 @@ import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { selectIsAuthenticated, logout } from "../../redux/user/userSlice";
+import {
+  selectIsAuthenticated,
+  logout,
+  selectUserIsLoading,
+} from "../../redux/user/userSlice";
 import profileURL from "../../assets/user.svg";
 import DrawerComp from "../DrawerComp/DrawerComp";
 
@@ -56,7 +61,8 @@ const StyledBadge = withStyles((theme) => ({
 
 const useStyles = makeStyles((theme) => ({
   appBarBottom: {
-    position: "static",
+    position: "sticky",
+    width: "100%",
     [theme.breakpoints.down("xs")]: {
       position: "fixed",
       top: "auto",
@@ -136,6 +142,8 @@ const Header = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const userIsLoading = useSelector(selectUserIsLoading);
+
   const [state, setState] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -157,6 +165,8 @@ const Header = () => {
 
     setState(open);
   };
+
+  console.log(userIsLoading);
 
   return (
     <>
@@ -193,7 +203,9 @@ const Header = () => {
           <div className={classes.grow} />
 
           <div className={classes.forDesktop}>
-            {isAuthenticated ? (
+            {userIsLoading ? (
+              <CircularProgress size="30px" />
+            ) : isAuthenticated ? (
               <StyledBadge
                 overlap="circle"
                 anchorOrigin={{
@@ -221,7 +233,9 @@ const Header = () => {
             <Fab color="primary" aria-label="add" className={classes.fabButton}>
               <AddIcon />
             </Fab>
-            {isAuthenticated ? (
+            {userIsLoading ? (
+              <CircularProgress size="30px" />
+            ) : isAuthenticated ? (
               <StyledBadge
                 overlap="circle"
                 anchorOrigin={{

@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
+import Post from "../../Components/Post/Post";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    zIndex: -1,
     width: "100%",
-    height: "100%",
-    borderRadius: 0,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
     padding: "80px 10px 0 10px",
     [theme.breakpoints.down("xs")]: {
       padding: "0 10px 80px 10px",
@@ -23,9 +20,12 @@ const HomePage = (props) => {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root} elevation={0}>
-      Hello World
-    </Paper>
+    <div className={classes.root} elevation={0}>
+      <Post lang="cpp" stars={4} loading={false} />
+      <Post lang="c" stars={9} loading={false} />
+      <Post lang="angular" stars={24} loading={false} />
+      <Post lang="php" stars={1000099999999999999999} loading={false} />
+    </div>
   );
 };
 

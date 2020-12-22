@@ -4,6 +4,7 @@ import { axiosFetch } from "../../axios";
 export const userSlice = createSlice({
   name: "user",
   initialState: {
+    isLoading: false,
     accessToken: null,
     userInfo: {
       displayName: null,
@@ -12,8 +13,14 @@ export const userSlice = createSlice({
   },
   reducers: {
     setUser: (state, action) => {
-      state.accessToken = action.payload.token;
+      state.accessToken = action.payload.accessToken;
       state.userInfo = action.payload.userInfo;
+    },
+    setUserStart: (state) => {
+      state.isLoading = true;
+    },
+    setUserFinish: (state) => {
+      state.isLoading = false;
     },
     logout: (state) => {
       state.accessToken = null;
@@ -25,12 +32,18 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, logout } = userSlice.actions;
+export const {
+  setUser,
+  setUserStart,
+  setUserFinish,
+  logout,
+} = userSlice.actions;
 
 export const selectUser = (state) => state.user.userInfo; // For profile page
 export const selectIsAuthenticated = (state) => {
-  return state.user.userInfo.displayName !== null;
+  return state.user.accessToken !== null;
 };
 export const selectIsAdmin = (state) => state.user.userInfo.isAdmin === "true";
+export const selectUserIsLoading = (state) => state.user.isLoading;
 
 export default userSlice.reducer;

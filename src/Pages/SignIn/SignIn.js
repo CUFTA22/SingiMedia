@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  CircularProgress,
   FormControl,
   IconButton,
   Input,
@@ -14,14 +15,14 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
-import { ReactComponent as Hacker } from "../assets/hacker.svg";
+import { ReactComponent as Hacker } from "../../assets/hacker.svg";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { axiosFetch } from "../axios";
-import { setUser } from "../redux/user/userSlice";
-import { useDispatch } from "react-redux";
+import { axiosFetch } from "../../axios";
+import { setUser } from "../../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   bg: {
@@ -85,7 +86,6 @@ const useStyles = makeStyles((theme) => ({
 
 const SignIn = () => {
   const classes = useStyles();
-  const history = useHistory();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [values, setValues] = React.useState({
@@ -93,6 +93,7 @@ const SignIn = () => {
     password: "",
     showPassword: false,
     empty: false,
+    loading: false,
   });
 
   const handleChange = (prop) => (event) => {
@@ -109,18 +110,12 @@ const SignIn = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    setValues({ ...values, loading: true });
     axiosFetch
-      .post(
-        "/auth/login",
-        {
-          displayName: values.displayName,
-          password: values.password,
-        },
-        {
-          withCredentials: true,
-        }
-      )
+      .post("/auth/login", {
+        displayName: values.displayName,
+        password: values.password,
+      })
       .then((res) => {
         enqueueSnackbar(`${res.data.message}`, {
           variant: `success`,
@@ -132,8 +127,10 @@ const SignIn = () => {
             userInfo: res.data.userInfo,
           })
         );
+        setValues({ ...values, loading: false });
       })
       .catch((err) => {
+        setValues({ ...values, loading: false });
         enqueueSnackbar(`${err.response.data.message}`, {
           variant: `${err.response.data.variant}`,
         });
@@ -190,7 +187,11 @@ const SignIn = () => {
               variant="contained"
               color="primary"
             >
-              Sign In
+              {!values.loading ? (
+                "Sing In"
+              ) : (
+                <CircularProgress size="25px" color="inherit" />
+              )}
             </Button>
           </CardActions>
           <Link to="/signup"></Link>

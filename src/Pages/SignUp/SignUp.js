@@ -14,14 +14,14 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
-import { ReactComponent as Hacker } from "../assets/hacker2.svg";
+import { ReactComponent as Hacker } from "../../assets/hacker2.svg";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { Link, useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { axiosFetch } from "../axios";
+import { axiosFetch } from "../../axios";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/user/userSlice";
+import { setUser } from "../../redux/user/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   bg: {
@@ -92,7 +92,8 @@ const SignUp = () => {
     displayName: "",
     password: "",
     passwordCheck: "",
-    showPassword: false,
+    showPassword1: false,
+    showPassword2: false,
     empty: false,
   });
 
@@ -100,8 +101,11 @@ const SignUp = () => {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
+  const handleClickShowPassword1 = () => {
+    setValues({ ...values, showPassword1: !values.showPassword1 });
+  };
+  const handleClickShowPassword2 = () => {
+    setValues({ ...values, showPassword2: !values.showPassword2 });
   };
 
   const handleMouseDownPassword = (event) => {
@@ -122,18 +126,12 @@ const SignUp = () => {
           variant: `success`,
         });
 
-        // localStorage.setItem("token", res.data.token);
-        // localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
-        // localStorage.setItem("expiresAt", res.data.expiresAt);
-
         dispatch(
           setUser({
-            token: res.data.token,
-            expiresAt: res.data.expiresAt,
+            accessToken: res.data.accessToken,
             userInfo: res.data.userInfo,
           })
         );
-        history.push("/");
       })
       .catch((err) => {
         enqueueSnackbar(`${err.response.data.message}`, {
@@ -168,17 +166,21 @@ const SignUp = () => {
               </InputLabel>
               <Input
                 id="standard-adornment-password"
-                type={values.showPassword ? "text" : "password"}
+                type={values.showPassword1 ? "text" : "password"}
                 value={values.password}
                 onChange={handleChange("password")}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
+                      onClick={handleClickShowPassword1}
                       onMouseDown={handleMouseDownPassword}
                     >
-                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                      {values.showPassword1 ? (
+                        <Visibility />
+                      ) : (
+                        <VisibilityOff />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 }
@@ -191,17 +193,21 @@ const SignUp = () => {
               </InputLabel>
               <Input
                 id="standard-adornment-repeatPassword"
-                type={values.showPassword ? "text" : "password"}
+                type={values.showPassword2 ? "text" : "password"}
                 value={values.passwordCheck}
                 onChange={handleChange("passwordCheck")}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
+                      onClick={handleClickShowPassword2}
                       onMouseDown={handleMouseDownPassword}
                     >
-                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                      {values.showPassword2 ? (
+                        <Visibility />
+                      ) : (
+                        <VisibilityOff />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 }

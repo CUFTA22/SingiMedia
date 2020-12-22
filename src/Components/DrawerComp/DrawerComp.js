@@ -41,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
+  forDesktop: {
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
 }));
 
 const DrawerComp = ({ toggleDrawer, state }) => {
@@ -63,11 +68,10 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             <ListItemIcon>
               <SingiLogo className={classes.logo} />
             </ListItemIcon>
-            <ListItemText primary={"SingiMedia V1.0"} />
+            <ListItemText primary={"Singi Media POC"} />
           </ListItem>
 
           <Divider />
-
           <ListItem onClick={() => history.push("/")} button>
             <ListItemIcon>
               <HomeRoundedIcon />
@@ -91,12 +95,12 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             <ListItemText primary={"View Profile"} />
           </ListItem>
 
-          {/* <ListItem button>
+          <ListItem className={classes.forDesktop} button>
             <ListItemIcon>
               <AddRoundedIcon />
             </ListItemIcon>
             <ListItemText primary={"Add a Post"} />
-          </ListItem> */}
+          </ListItem>
 
           <ListItem button>
             <ListItemIcon>
@@ -113,7 +117,6 @@ const DrawerComp = ({ toggleDrawer, state }) => {
           </ListItem>
 
           <Divider />
-
           {darkMode ? (
             <Tooltip title="Don't do this to yourself" arrow placement="left">
               <ListItem onClick={() => dispatch(toggleDarkMode())} button>
@@ -146,6 +149,7 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             <ListItemText primary={"Game Center"} />
             {openGC ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
+
           <Collapse in={openGC} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <ListItem button className={classes.nested}>

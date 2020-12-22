@@ -6,14 +6,20 @@ import { SnackbarProvider } from "notistack";
 import Header from "./Components/Header/Header";
 import Spinner from "./Components/Spinner/Spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { selectIsAuthenticated, setUser } from "./redux/user/userSlice";
+import {
+  selectIsAuthenticated,
+  setUser,
+  setUserFinish,
+  setUserStart,
+} from "./redux/user/userSlice";
 import { selectDarkMode } from "./redux/utils/utilsSlice";
 import { axiosFetch } from "./axios";
+import { toggleDarkBody } from "./helpers/utils";
 
-const HomePage = lazy(() => import("./Pages/HomePage"));
-const SignIn = lazy(() => import("./Pages/SignIn"));
-const SignUp = lazy(() => import("./Pages/SignUp"));
-const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
+const HomePage = lazy(() => import("./Pages/HomePage/HomePage"));
+const SignIn = lazy(() => import("./Pages/SignIn/SignIn"));
+const SignUp = lazy(() => import("./Pages/SignUp/SignUp"));
+const ProfilePage = lazy(() => import("./Pages/ProfilePage/ProfilePage"));
 
 const App = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -26,15 +32,27 @@ const App = () => {
   });
 
   useEffect(() => {
-    axiosFetch.post("/auth/checkAuth").then((res) =>
-      dispatch(
-        setUser({
-          accessToken: res.data.accessToken,
-          userInfo: res.data.userInfo,
-        })
-      )
-    );
-  }, []);
+    dispatch(setUserStart());
+
+    axiosFetch
+      .post("/auth/checkAuth")
+      .then((res) => {
+        dispatch(
+          setUser({
+            accessToken: res.data.accessToken,
+            userInfo: res.data.userInfo,
+          })
+        );
+        dispatch(setUserFinish());
+      })
+      .catch(() => {
+        dispatch(setUserFinish());
+      });
+  }, [dispatch]);
+
+  useEffect(() => {
+    toggleDarkBody(darkMode);
+  }, [darkMode]);
 
   return (
     <ThemeProvider theme={theme}>
