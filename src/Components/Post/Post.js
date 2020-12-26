@@ -13,12 +13,12 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 import ShareIcon from "@material-ui/icons/Share";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
-import { useSelector } from "react-redux";
-import {
-  selectIsAdmin,
-  selectIsAuthenticated,
-} from "../../redux/user/userSlice";
-import { Redirect, useHistory } from "react-router-dom";
+// import { useSelector } from "react-redux";
+// import {
+//   selectIsAdmin,
+//   selectIsAuthenticated,
+// } from "../../redux/user/userSlice";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -40,26 +40,31 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Post = ({ id, stars, userStars, title, ghLink, desc, lang, loading }) => {
-  const [values, setValues] = useState({
-    icon: null,
-    starred: false,
-  });
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const isAdmin = useSelector(selectIsAdmin);
+const Post = ({
+  id,
+  stars,
+  userStars,
+  username,
+  title,
+  ghLink,
+  desc,
+  lang,
+  loading,
+}) => {
+  const [icon, setIcon] = useState(null);
+  const [starred, setStarred] = useState(false);
+  // const isAuthenticated = useSelector(selectIsAuthenticated);
+  // const isAdmin = useSelector(selectIsAdmin);
   const history = useHistory();
 
   useEffect(() => {
     if (lang) {
-      setValues({
-        ...values,
-        icon: require(`../../assets/postIcons/${lang}.svg`),
-      });
+      setIcon(require(`../../assets/postIcons/${lang}.svg`));
     }
   }, [lang]);
 
   const toggleStar = () => {
-    setValues({ ...values, starred: !values.starred });
+    setStarred(!starred);
   };
   const classes = useStyles();
   return (
@@ -68,17 +73,13 @@ const Post = ({ id, stars, userStars, title, ghLink, desc, lang, loading }) => {
         {loading ? (
           <Skeleton variant="circle" width={40} height={40} />
         ) : (
-          <Avatar
-            variant="square"
-            src={values.icon?.default}
-            alt="Post language"
-          />
+          <Avatar variant="square" src={icon?.default} alt="Post language" />
         )}
 
         {loading ? (
           <Skeleton variant="text" width={100} height={20} />
         ) : (
-          <Typography>{title}</Typography>
+          <Typography>{username}</Typography>
         )}
         <div className={classes.grow}></div>
         {loading ? null : (
@@ -88,7 +89,9 @@ const Post = ({ id, stars, userStars, title, ghLink, desc, lang, loading }) => {
         )}
       </CardActions>
       <Divider />
-      <CardActionArea onClick={() => (!loading ? history.push("/post") : null)}>
+      <CardActionArea
+        onClick={() => (!loading ? history.push(`/post/${id}`) : null)}
+      >
         <CardContent>
           <Typography gutterBottom noWrap variant="h5">
             {loading ? <Skeleton /> : title}
@@ -105,7 +108,7 @@ const Post = ({ id, stars, userStars, title, ghLink, desc, lang, loading }) => {
               <ShareIcon />
             </IconButton>
             <IconButton onClick={toggleStar}>
-              {!values.starred ? (
+              {!starred ? (
                 <StarBorderIcon />
               ) : (
                 <StarIcon className={classes.gold} />
@@ -118,11 +121,7 @@ const Post = ({ id, stars, userStars, title, ghLink, desc, lang, loading }) => {
         {loading ? (
           <Skeleton width={107} height={36} />
         ) : (
-          <a
-            href="https://github.com/CUFTA22/SingiMedia"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={ghLink} target="_blank" rel="noopener noreferrer">
             <Button
               startIcon={<GitHubIcon />}
               variant="contained"

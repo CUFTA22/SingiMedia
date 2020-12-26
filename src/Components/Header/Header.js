@@ -166,8 +166,6 @@ const Header = () => {
     setState(open);
   };
 
-  console.log(userIsLoading);
-
   return (
     <>
       <AppBar color="default" className={classes.appBarBottom}>

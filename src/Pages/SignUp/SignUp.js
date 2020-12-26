@@ -17,7 +17,7 @@ import Button from "@material-ui/core/Button";
 import { ReactComponent as Hacker } from "../../assets/hacker2.svg";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { axiosFetch } from "../../axios";
 import { useDispatch } from "react-redux";
@@ -85,7 +85,6 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
   const classes = useStyles();
-  const history = useHistory();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [values, setValues] = React.useState({

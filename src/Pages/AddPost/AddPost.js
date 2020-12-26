@@ -14,6 +14,8 @@ import AddIcon from "@material-ui/icons/Add";
 import { langs } from "./langOptions";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/user/userSlice";
+import { useSnackbar } from "notistack";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +47,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 const AddPost = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
   const userInfo = useSelector(selectUser);
   const [values, setValues] = useState({
     ghLink: "",
@@ -65,8 +69,18 @@ const AddPost = () => {
         lang: values.lang,
         displayName: userInfo.displayName,
       })
-      .then(console.log)
-      .catch(console.log);
+      .then((res) => {
+        enqueueSnackbar(`${res.data.message}`, {
+          variant: `success`,
+        });
+
+        history.push(`/post/${res.data.postId}`);
+      })
+      .catch((err) => {
+        enqueueSnackbar(`${err.response.data.message}`, {
+          variant: `${err.response.data.variant}`,
+        });
+      });
   };
 
   return (

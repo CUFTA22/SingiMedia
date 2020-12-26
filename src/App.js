@@ -22,6 +22,7 @@ const AddPost = lazy(() => import("./Pages/AddPost/AddPost"));
 const SignUp = lazy(() => import("./Pages/SignUp/SignUp"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage/ProfilePage"));
 const PostPage = lazy(() => import("./Pages/PostPage/PostPage"));
+const LearnPage = lazy(() => import("./Pages/LearnPage/LearnPage"));
 
 const App = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -70,7 +71,9 @@ const App = () => {
           <ErrorBoundary>
             <Suspense fallback={<Spinner />}>
               <Route exact path="/" component={HomePage} />
-              <Route exact path="/post" component={PostPage} />
+              <Route exact path="/post/:id" component={PostPage} />
+              <Route exact path="/learn" component={LearnPage} />
+
               <Route
                 exact
                 path="/signin"

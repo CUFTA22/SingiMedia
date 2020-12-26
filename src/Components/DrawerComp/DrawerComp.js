@@ -121,7 +121,7 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             <ListItemText primary={"Earn a Badge"} />
           </ListItem>
 
-          <ListItem button>
+          <ListItem onClick={() => history.push("/learn")} button>
             <ListItemIcon>
               <SchoolRoundedIcon />
             </ListItemIcon>

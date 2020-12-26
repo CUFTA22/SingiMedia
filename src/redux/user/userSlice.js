@@ -40,6 +40,8 @@ export const {
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.userInfo; // For profile and add page
+export const selectAccessToken = (state) => state.user.accessToken; // For profile and add page
+
 export const selectIsAuthenticated = (state) => {
   return state.user.accessToken !== null;
 };

@@ -22,7 +22,7 @@ import { Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { axiosFetch } from "../../axios";
 import { setUser } from "../../redux/user/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   bg: {
@@ -127,7 +127,6 @@ const SignIn = () => {
             userInfo: res.data.userInfo,
           })
         );
-        setValues({ ...values, loading: false });
       })
       .catch((err) => {
         setValues({ ...values, loading: false });
