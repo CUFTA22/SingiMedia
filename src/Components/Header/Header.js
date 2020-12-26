@@ -230,7 +230,12 @@ const Header = () => {
           </div>
 
           <div className={classes.forMobile}>
-            <Fab color="primary" aria-label="add" className={classes.fabButton}>
+            <Fab
+              onClick={() => history.push("/add-post")}
+              color="primary"
+              aria-label="add"
+              className={classes.fabButton}
+            >
               <AddIcon />
             </Fab>
             {userIsLoading ? (

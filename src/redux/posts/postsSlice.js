@@ -1,16 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { axiosFetch } from "../../axios";
 
-export const userSlice = createSlice({
+export const postsSlice = createSlice({
   name: "posts",
   initialState: {
-    posts: [],
-    isLoading: false, // In component we check
+    posts: [null, null, null, null, null, null, null, null],
+    isLoading: true, // In component we check
     error: false,
   },
   reducers: {
-    fetchPostsSTART: (state) => {
-      state.isLoading = true;
-    },
     fetchPostsSUCCESS: (state) => {
       state.isLoading = false;
     },
@@ -18,26 +16,38 @@ export const userSlice = createSlice({
       state.error = true;
     },
     setPosts: (state, action) => {
-      // Maybe we can do this in SUCCESS
-      state.posts = actions.payload.posts;
+      // action.payload.map((newPost) => {
+      //   state.posts = [...state.posts, newPost];
+      // });
+      state.posts = action.payload;
     },
   },
 });
 
-export const { setUser, logout } = userSlice.actions;
+export const {
+  fetchPostsSTART,
+  fetchPostsSUCCESS,
+  fetchPostsFAILED,
+  setPosts,
+} = postsSlice.actions;
 
-export const fetchPosts = (posts) => (dispatch) => {
-  dispatch(fetchPostsSTART());
-  fetch("")
+export const selectPostsLoading = (state) => state.posts.isLoading;
+export const selectPosts = (state) => state.posts.posts;
+
+export const fetchPostsAsync = (filter) => (dispatch) => {
+  axiosFetch
+    .get("/posts/front", {
+      params: {
+        filter: filter,
+      },
+    })
     .then((res) => {
       dispatch(fetchPostsSUCCESS());
       dispatch(setPosts(res.data));
     })
-    .catch((err) => {
+    .catch(() => {
       dispatch(fetchPostsFAILED());
     });
 };
 
-export const selectUser = (state) => state.user; // getCurrentUser
-
-export default userSlice.reducer;
+export default postsSlice.reducer;

@@ -18,8 +18,10 @@ import { toggleDarkBody } from "./helpers/utils";
 
 const HomePage = lazy(() => import("./Pages/HomePage/HomePage"));
 const SignIn = lazy(() => import("./Pages/SignIn/SignIn"));
+const AddPost = lazy(() => import("./Pages/AddPost/AddPost"));
 const SignUp = lazy(() => import("./Pages/SignUp/SignUp"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage/ProfilePage"));
+const PostPage = lazy(() => import("./Pages/PostPage/PostPage"));
 
 const App = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -68,6 +70,7 @@ const App = () => {
           <ErrorBoundary>
             <Suspense fallback={<Spinner />}>
               <Route exact path="/" component={HomePage} />
+              <Route exact path="/post" component={PostPage} />
               <Route
                 exact
                 path="/signin"
@@ -87,6 +90,13 @@ const App = () => {
                 path="/user"
                 render={() =>
                   !isAuthenticated ? <Redirect to="/" /> : <ProfilePage />
+                }
+              />
+              <Route
+                exact
+                path="/add-post"
+                render={() =>
+                  !isAuthenticated ? <Redirect to="/" /> : <AddPost />
                 }
               />
             </Suspense>

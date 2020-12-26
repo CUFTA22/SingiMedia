@@ -25,7 +25,7 @@ export const userSlice = createSlice({
     logout: (state) => {
       state.accessToken = null;
       state.userInfo.displayName = null;
-      state.userInfo.role = null;
+      state.userInfo.isAdmin = null;
 
       axiosFetch.post("/auth/logout");
     },
@@ -39,7 +39,7 @@ export const {
   logout,
 } = userSlice.actions;
 
-export const selectUser = (state) => state.user.userInfo; // For profile page
+export const selectUser = (state) => state.user.userInfo; // For profile and add page
 export const selectIsAuthenticated = (state) => {
   return state.user.accessToken !== null;
 };

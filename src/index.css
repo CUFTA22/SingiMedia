@@ -27,6 +27,11 @@ a {
   text-decoration: none;
 }
 
+img {
+  pointer-events: none;
+  user-select: none;
+}
+
 .darkModeBG {
   background-color: #424242;
 }

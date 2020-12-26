@@ -28,7 +28,10 @@ import {
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectDarkMode, toggleDarkMode } from "../../redux/utils/utilsSlice";
-import { selectIsAdmin } from "../../redux/user/userSlice";
+import {
+  selectIsAdmin,
+  selectIsAuthenticated,
+} from "../../redux/user/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -54,6 +57,7 @@ const DrawerComp = ({ toggleDrawer, state }) => {
   const dispatch = useDispatch();
   const darkMode = useSelector(selectDarkMode);
   const isAdmin = useSelector(selectIsAdmin);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [openGC, setOpenGC] = React.useState(false);
 
   const handleOpenGC = () => {
@@ -88,19 +92,27 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             </ListItem>
           ) : null}
 
-          <ListItem onClick={() => history.push("/user")} button>
-            <ListItemIcon>
-              <PersonRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary={"View Profile"} />
-          </ListItem>
+          {isAuthenticated ? (
+            <ListItem onClick={() => history.push("/user")} button>
+              <ListItemIcon>
+                <PersonRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"View Profile"} />
+            </ListItem>
+          ) : null}
 
-          <ListItem className={classes.forDesktop} button>
-            <ListItemIcon>
-              <AddRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Add a Post"} />
-          </ListItem>
+          {isAuthenticated ? (
+            <ListItem
+              onClick={() => history.push("/add-post")}
+              className={classes.forDesktop}
+              button
+            >
+              <ListItemIcon>
+                <AddRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Add a Post"} />
+            </ListItem>
+          ) : null}
 
           <ListItem button>
             <ListItemIcon>

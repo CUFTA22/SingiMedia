@@ -18,10 +18,11 @@ import {
   selectIsAdmin,
   selectIsAuthenticated,
 } from "../../redux/user/userSlice";
+import { Redirect, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   card: {
-    width: 340,
+    width: 320,
   },
   gold: {
     color: "#f2af4c",
@@ -39,20 +40,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Post = ({ id, stars, userStars, title, description, lang, loading }) => {
+const Post = ({ id, stars, userStars, title, ghLink, desc, lang, loading }) => {
   const [values, setValues] = useState({
     icon: null,
     starred: false,
   });
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isAdmin = useSelector(selectIsAdmin);
+  const history = useHistory();
 
   useEffect(() => {
-    setValues({
-      ...values,
-      icon: require(`../../assets/postIcons/${lang}.svg`),
-    });
-  }, [values.icon]);
+    if (lang) {
+      setValues({
+        ...values,
+        icon: require(`../../assets/postIcons/${lang}.svg`),
+      });
+    }
+  }, [lang]);
 
   const toggleStar = () => {
     setValues({ ...values, starred: !values.starred });
@@ -71,8 +75,12 @@ const Post = ({ id, stars, userStars, title, description, lang, loading }) => {
           />
         )}
 
+        {loading ? (
+          <Skeleton variant="text" width={100} height={20} />
+        ) : (
+          <Typography>{title}</Typography>
+        )}
         <div className={classes.grow}></div>
-
         {loading ? null : (
           <IconButton>
             <MoreHorizIcon />
@@ -80,18 +88,12 @@ const Post = ({ id, stars, userStars, title, description, lang, loading }) => {
         )}
       </CardActions>
       <Divider />
-      <CardActionArea>
+      <CardActionArea onClick={() => (!loading ? history.push("/post") : null)}>
         <CardContent>
           <Typography gutterBottom noWrap variant="h5">
-            {loading ? <Skeleton /> : "Lizard"}
+            {loading ? <Skeleton /> : title}
           </Typography>
-          <Typography noWrap>
-            {loading ? (
-              <Skeleton />
-            ) : (
-              "Rhydon these nuts LLLLLLLLLLLLLLLLLLLLLLLLL"
-            )}
-          </Typography>
+          <Typography noWrap>{loading ? <Skeleton /> : desc}</Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
@@ -112,18 +114,23 @@ const Post = ({ id, stars, userStars, title, description, lang, loading }) => {
             <Typography>{stars}</Typography>
           </>
         )}
-
         <div className={classes.grow}></div>
         {loading ? (
           <Skeleton width={107} height={36} />
         ) : (
-          <Button
-            startIcon={<GitHubIcon />}
-            variant="contained"
-            className={classes.gh}
+          <a
+            href="https://github.com/CUFTA22/SingiMedia"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            GitHub
-          </Button>
+            <Button
+              startIcon={<GitHubIcon />}
+              variant="contained"
+              className={classes.gh}
+            >
+              GitHub
+            </Button>
+          </a>
         )}
       </CardActions>
     </Card>
