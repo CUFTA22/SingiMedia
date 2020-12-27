@@ -9,6 +9,7 @@ export const userSlice = createSlice({
     userInfo: {
       displayName: null,
       isAdmin: null,
+      avatar: null,
     },
   },
   reducers: {
@@ -26,6 +27,7 @@ export const userSlice = createSlice({
       state.accessToken = null;
       state.userInfo.displayName = null;
       state.userInfo.isAdmin = null;
+      state.userInfo.avatar = null;
 
       axiosFetch.post("/auth/logout");
     },

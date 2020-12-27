@@ -13,11 +13,11 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 import ShareIcon from "@material-ui/icons/Share";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
-// import { useSelector } from "react-redux";
-// import {
-//   selectIsAdmin,
-//   selectIsAuthenticated,
-// } from "../../redux/user/userSlice";
+import { useSelector } from "react-redux";
+import {
+  selectIsAdmin,
+  selectIsAuthenticated,
+} from "../../redux/user/userSlice";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
@@ -53,15 +53,9 @@ const Post = ({
 }) => {
   const [icon, setIcon] = useState(null);
   const [starred, setStarred] = useState(false);
-  // const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   // const isAdmin = useSelector(selectIsAdmin);
   const history = useHistory();
-
-  useEffect(() => {
-    if (lang) {
-      setIcon(require(`../../assets/postIcons/${lang}.svg`));
-    }
-  }, [lang]);
 
   const toggleStar = () => {
     setStarred(!starred);
@@ -73,7 +67,13 @@ const Post = ({
         {loading ? (
           <Skeleton variant="circle" width={40} height={40} />
         ) : (
-          <Avatar variant="square" src={icon?.default} alt="Post language" />
+          <Avatar
+            variant="square"
+            src={
+              lang ? require(`../../assets/postIcons/${lang}.svg`).default : ""
+            }
+            alt="Post language"
+          />
         )}
 
         {loading ? (
@@ -107,14 +107,18 @@ const Post = ({
             <IconButton>
               <ShareIcon />
             </IconButton>
-            <IconButton onClick={toggleStar}>
-              {!starred ? (
-                <StarBorderIcon />
-              ) : (
-                <StarIcon className={classes.gold} />
-              )}
-            </IconButton>
-            <Typography>{stars}</Typography>
+            {isAuthenticated ? (
+              <>
+                <IconButton onClick={toggleStar}>
+                  {!starred ? (
+                    <StarBorderIcon />
+                  ) : (
+                    <StarIcon className={classes.gold} />
+                  )}
+                </IconButton>
+                <Typography>{stars}</Typography>
+              </>
+            ) : null}
           </>
         )}
         <div className={classes.grow}></div>

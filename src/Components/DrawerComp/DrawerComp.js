@@ -10,7 +10,7 @@ import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import Brightness2Icon from "@material-ui/icons/Brightness2";
-import AdjustIcon from "@material-ui/icons/Adjust";
+import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
 import SchoolRoundedIcon from "@material-ui/icons/SchoolRounded";
 import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
 import { ReactComponent as SingiLogo } from "../../assets/SingiLogo.svg";
@@ -29,6 +29,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectDarkMode, toggleDarkMode } from "../../redux/utils/utilsSlice";
 import {
+  logout,
   selectIsAdmin,
   selectIsAuthenticated,
 } from "../../redux/user/userSlice";
@@ -48,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       display: "none",
     },
+  },
+  grow: {
+    flexGrow: 1,
   },
 }));
 
@@ -89,15 +93,6 @@ const DrawerComp = ({ toggleDrawer, state }) => {
                 <DashboardRoundedIcon />
               </ListItemIcon>
               <ListItemText primary={"Dashboard"} />
-            </ListItem>
-          ) : null}
-
-          {isAuthenticated ? (
-            <ListItem onClick={() => history.push("/user")} button>
-              <ListItemIcon>
-                <PersonRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={"View Profile"} />
             </ListItem>
           ) : null}
 
@@ -147,12 +142,14 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             </ListItem>
           )}
 
-          <ListItem button>
-            <ListItemIcon>
-              <AdjustIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Custom Cursor"} />
-          </ListItem>
+          {isAuthenticated ? (
+            <ListItem onClick={() => dispatch(logout())} button>
+              <ListItemIcon>
+                <ExitToAppRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Sign Out"} />
+            </ListItem>
+          ) : null}
 
           <ListItem button onClick={handleOpenGC}>
             <ListItemIcon>

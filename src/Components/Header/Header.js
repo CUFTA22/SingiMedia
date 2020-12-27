@@ -13,21 +13,18 @@ import {
   Typography,
   withStyles,
 } from "@material-ui/core";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import Avatar from "@material-ui/core/Avatar";
 import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
 import MenuIcon from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
 import { Link, useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   selectIsAuthenticated,
-  logout,
   selectUserIsLoading,
+  selectUser,
 } from "../../redux/user/userSlice";
-import profileURL from "../../assets/user.svg";
 import DrawerComp from "../DrawerComp/DrawerComp";
 
 const StyledBadge = withStyles((theme) => ({
@@ -60,6 +57,11 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 const useStyles = makeStyles((theme) => ({
+  cp: {
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
   appBarBottom: {
     position: "sticky",
     width: "100%",
@@ -140,20 +142,11 @@ const useStyles = makeStyles((theme) => ({
 const Header = () => {
   const classes = useStyles();
   const history = useHistory();
-  const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const userIsLoading = useSelector(selectUserIsLoading);
+  const userInfo = useSelector(selectUser);
 
   const [state, setState] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleClickMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -213,8 +206,14 @@ const Header = () => {
                 variant="dot"
               >
                 <Avatar
-                  onClick={handleClickMenu}
-                  src={profileURL}
+                  className={classes.cp}
+                  onClick={() => {
+                    history.push(`/user/${userInfo.displayName}`);
+                  }}
+                  src={
+                    require(`../../assets/avatars/${userInfo.avatar}.svg`)
+                      .default
+                  }
                   alt={`SingiMedia profile avatar`}
                 />
               </StyledBadge>
@@ -248,8 +247,13 @@ const Header = () => {
                 variant="dot"
               >
                 <Avatar
-                  onClick={handleClickMenu}
-                  src={profileURL}
+                  onClick={() => {
+                    history.push(`/user/${userInfo.displayName}`);
+                  }}
+                  src={
+                    require(`../../assets/avatars/${userInfo.avatar}.svg`)
+                      .default
+                  }
                   alt={`SingiMedia profile avatar`}
                 />
               </StyledBadge>
@@ -265,31 +269,6 @@ const Header = () => {
       </AppBar>
 
       <DrawerComp toggleDrawer={toggleDrawer} state={state} />
-
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-      >
-        <MenuItem
-          onClick={() => {
-            handleCloseMenu();
-            history.push("/user");
-          }}
-        >
-          Profile
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleCloseMenu();
-            dispatch(logout());
-          }}
-        >
-          Logout
-        </MenuItem>
-      </Menu>
     </>
   );
 };

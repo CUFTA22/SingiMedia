@@ -73,6 +73,7 @@ const App = () => {
               <Route exact path="/" component={HomePage} />
               <Route exact path="/post/:id" component={PostPage} />
               <Route exact path="/learn" component={LearnPage} />
+              <Route path="/user/:displayName" component={ProfilePage} />
 
               <Route
                 exact
@@ -86,13 +87,6 @@ const App = () => {
                 path="/signup"
                 render={() =>
                   isAuthenticated ? <Redirect to="/" /> : <SignUp />
-                }
-              />
-              <Route
-                exact
-                path="/user"
-                render={() =>
-                  !isAuthenticated ? <Redirect to="/" /> : <ProfilePage />
                 }
               />
               <Route
