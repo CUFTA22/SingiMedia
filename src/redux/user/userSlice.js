@@ -14,7 +14,9 @@ export const userSlice = createSlice({
   },
   reducers: {
     setUser: (state, action) => {
-      state.accessToken = action.payload.accessToken;
+      if (action.payload.accessToken) {
+        state.accessToken = action.payload.accessToken;
+      }
       state.userInfo = action.payload.userInfo;
     },
     setUserStart: (state) => {
@@ -47,7 +49,7 @@ export const selectAccessToken = (state) => state.user.accessToken; // For profi
 export const selectIsAuthenticated = (state) => {
   return state.user.accessToken !== null;
 };
-export const selectIsAdmin = (state) => state.user.userInfo.isAdmin === "true";
+export const selectIsAdmin = (state) => state.user.userInfo?.isAdmin === "true";
 export const selectUserIsLoading = (state) => state.user.isLoading;
 
 export default userSlice.reducer;

@@ -208,7 +208,7 @@ const Header = () => {
                 <Avatar
                   className={classes.cp}
                   onClick={() => {
-                    history.push(`/user/${userInfo.displayName}`);
+                    history.push(`/user/${userInfo?.displayName}`);
                   }}
                   src={
                     require(`../../assets/avatars/${userInfo.avatar}.svg`)
@@ -251,8 +251,10 @@ const Header = () => {
                     history.push(`/user/${userInfo.displayName}`);
                   }}
                   src={
-                    require(`../../assets/avatars/${userInfo.avatar}.svg`)
-                      .default
+                    userInfo
+                      ? require(`../../assets/avatars/${userInfo.avatar}.svg`)
+                          .default
+                      : ""
                   }
                   alt={`SingiMedia profile avatar`}
                 />
