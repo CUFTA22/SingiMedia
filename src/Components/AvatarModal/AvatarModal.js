@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -8,12 +8,7 @@ import { maleAvatars, femaleAvatars, otherAvatars } from "./avatarArrays";
 import { axiosFetch } from "../../axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import {
-  selectAccessToken,
-  setUser,
-  setUserFinish,
-  setUserStart,
-} from "../../redux/user/userSlice";
+import { selectAccessToken, setUser } from "../../redux/user/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   esc: {
@@ -78,12 +73,12 @@ const AvatarModal = ({ open, handleClose }) => {
       <DialogContent>
         {maleAvatars.map((name, idx) => (
           <IconButton
+            key={idx}
             onClick={() => handleUpdateAvatar(name)}
             className={classes.margin}
           >
             <Avatar
               className={classes.avatar}
-              key={idx}
               src={require(`../../assets/avatars/${name}.svg`).default}
             />
           </IconButton>
@@ -93,12 +88,12 @@ const AvatarModal = ({ open, handleClose }) => {
       <DialogContent>
         {femaleAvatars.map((name, idx) => (
           <IconButton
+            key={idx}
             onClick={() => handleUpdateAvatar(name)}
             className={classes.margin}
           >
             <Avatar
               className={classes.avatar}
-              key={idx}
               src={require(`../../assets/avatars/${name}.svg`).default}
             />
           </IconButton>
@@ -108,12 +103,12 @@ const AvatarModal = ({ open, handleClose }) => {
       <DialogContent>
         {otherAvatars.map((name, idx) => (
           <IconButton
+            key={idx}
             onClick={() => handleUpdateAvatar(name)}
             className={classes.margin}
           >
             <Avatar
               className={classes.avatar}
-              key={idx}
               src={require(`../../assets/avatars/${name}.svg`).default}
             />
           </IconButton>

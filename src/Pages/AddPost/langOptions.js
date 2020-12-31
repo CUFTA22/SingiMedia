@@ -16,10 +16,6 @@ export const langs = [
     label: "NodeJS",
   },
   {
-    value: "php",
-    label: "PHP",
-  },
-  {
     value: "react",
     label: "ReactJS",
   },
@@ -45,12 +41,24 @@ export const langs = [
     label: "C#",
   },
   {
+    value: "kotlin",
+    label: "Kotlin",
+  },
+  {
     value: "swift",
     label: "Swift",
   },
   {
     value: "sql",
     label: "SQL File",
+  },
+  {
+    value: "php",
+    label: "PHP",
+  },
+  {
+    value: "ruby",
+    label: "Ruby",
   },
   {
     value: "web",

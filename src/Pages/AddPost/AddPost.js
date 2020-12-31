@@ -9,11 +9,12 @@ import {
   makeStyles,
   MenuItem,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { langs } from "./langOptions";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/user/userSlice";
+import { selectAccessToken, selectUser } from "../../redux/user/userSlice";
 import { useSnackbar } from "notistack";
 import { useHistory } from "react-router-dom";
 
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     width: 550,
+    paddingTop: 10,
     display: "flex",
     justifyContent: "center",
   },
@@ -49,6 +51,7 @@ const AddPost = () => {
   const classes = useStyles();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
+  const token = useSelector(selectAccessToken);
   const userInfo = useSelector(selectUser);
   const [values, setValues] = useState({
     ghLink: "",
@@ -62,13 +65,21 @@ const AddPost = () => {
   };
   const handleSubmit = () => {
     axiosFetch
-      .post("/posts/add", {
-        title: values.title,
-        desc: values.desc,
-        ghLink: values.ghLink,
-        lang: values.lang,
-        displayName: userInfo.displayName,
-      })
+      .post(
+        "/posts/add",
+        {
+          title: values.title,
+          desc: values.desc,
+          ghLink: values.ghLink,
+          lang: values.lang,
+          displayName: userInfo.displayName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         enqueueSnackbar(`${res.data.message}`, {
           variant: `success`,
@@ -87,6 +98,7 @@ const AddPost = () => {
     <div className={classes.root}>
       <Card elevation={5} className={classes.card}>
         <CardContent className={classes.fields}>
+          <Typography variant="h4">PostCreator 3000</Typography>
           <TextField
             label="Title"
             value={values.title}

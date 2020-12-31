@@ -1,7 +1,6 @@
 import React from "react";
 import MouseRoundedIcon from "@material-ui/icons/MouseRounded";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
-import PersonRoundedIcon from "@material-ui/icons/PersonRounded";
 import AppsRoundedIcon from "@material-ui/icons/AppsRounded";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -109,12 +108,14 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             </ListItem>
           ) : null}
 
-          <ListItem button>
-            <ListItemIcon>
-              <EmojiEventsIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Earn a Badge"} />
-          </ListItem>
+          {isAuthenticated ? (
+            <ListItem onClick={() => history.push("/earn-badge")} button>
+              <ListItemIcon>
+                <EmojiEventsIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Earn a Badge"} />
+            </ListItem>
+          ) : null}
 
           <ListItem onClick={() => history.push("/learn")} button>
             <ListItemIcon>

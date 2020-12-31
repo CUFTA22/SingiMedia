@@ -15,7 +15,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import {
-  selectIsAdmin,
+  // selectIsAdmin,
   selectIsAuthenticated,
 } from "../../redux/user/userSlice";
 import { useHistory } from "react-router-dom";
@@ -43,7 +43,7 @@ const useStyles = makeStyles(() => ({
 const Post = ({
   id,
   stars,
-  userStars,
+  // userStars,
   username,
   title,
   ghLink,
@@ -51,7 +51,6 @@ const Post = ({
   lang,
   loading,
 }) => {
-  const [icon, setIcon] = useState(null);
   const [starred, setStarred] = useState(false);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   // const isAdmin = useSelector(selectIsAdmin);

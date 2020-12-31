@@ -8,7 +8,6 @@ import {
   Tabs,
   Typography,
 } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { axiosFetch } from "../../axios";
@@ -95,33 +94,40 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    if (token) {
-      axiosFetch
-        .get("/user/get", {
-          params: {
-            displayName: params.displayName,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setInfo(res.data);
-        })
-        .catch((err) => alert("Unauthorized!"));
-    }
+    // Since we send checkAuth request on every reload it can happen that we don't
+    // have accessToken in memory at the time of ProfilePage load. To avoid unexpected
+    // behavior we return in case token is not available.
+    if (!token) return;
+
+    axiosFetch
+      .get("/user/get", {
+        params: {
+          displayName: params.displayName,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setInfo(res.data);
+      })
+      .catch((err) => alert("Unauthorized!"));
   }, [token, params.displayName, userInfo]);
 
   return (
     <div className={classes.root}>
       <AvatarModal open={open} handleClose={() => handleClose()} />
       <Avatar
-        onClick={params.displayName == userInfo?.displayName && handleClickOpen}
+        onClick={
+          params.displayName === userInfo?.displayName
+            ? handleClickOpen
+            : undefined
+        }
         src={
           info ? require(`../../assets/avatars/${info.avatar}.svg`).default : ""
         }
         className={`${classes.large} ${
-          params.displayName == userInfo?.displayName && classes.hover
+          params.displayName === userInfo?.displayName && classes.hover
         }`}
       />
       <Typography color="textSecondary" variant="h4">
@@ -152,7 +158,7 @@ const ProfilePage = () => {
           centered
         >
           <Tab label="Users Posts" {...a11yProps(0)} />
-          {params.displayName == userInfo?.displayName && (
+          {params.displayName === userInfo?.displayName && (
             <Tab label="Saved Posts" {...a11yProps(1)} />
           )}
         </Tabs>

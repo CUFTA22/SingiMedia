@@ -39,7 +39,7 @@ const ProfilePostsUser = () => {
           setLoading(true);
         });
     }
-  }, [token]);
+  }, [token, params.displayName]);
 
   return (
     <Grid
