@@ -60,7 +60,7 @@ const HomePage = () => {
                   desc={post?.desc}
                   ghLink={post?.ghLink}
                   lang={post?.lang}
-                  stars={post?.stars}
+                  usersStar={post?.usersStar}
                   loading={loading}
                 />
               </Grid>

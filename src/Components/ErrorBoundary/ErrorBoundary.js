@@ -1,4 +1,6 @@
+import { Typography } from "@material-ui/core";
 import React, { Component } from "react";
+import { ReactComponent as Pepe } from "../../assets/error.svg";
 
 class ErrorBoundary extends Component {
   constructor() {
@@ -18,7 +20,14 @@ class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasErrored) {
-      return <div>Error...</div>;
+      return (
+        <>
+          <Pepe />
+          <Typography color="textSecondary" variant="h3">
+            An error has occurred!
+          </Typography>
+        </>
+      );
     }
 
     return this.props.children;

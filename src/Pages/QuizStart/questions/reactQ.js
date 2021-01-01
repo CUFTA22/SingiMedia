@@ -27,6 +27,30 @@ const react = [
     },
   },
   {
+    code: `
+    // Function at line 5 is?
+    useEffect(() => {
+      ...
+      return () => {}
+    }, [input])
+`,
+    a1: {
+      a:
+        "It's a return function that gives us some value back after effect runs.",
+      T: false,
+    },
+    a2: {
+      a: "It's a cleanup function that runs when component unmounts.",
+      T: true,
+    },
+    a3: {
+      a:
+        "It's a after effect function that always runs after the original effect.",
+      T: false,
+    },
+    a4: { a: "useEffect doesn't have a return function.", T: false },
+  },
+  {
     question: "What's the right way to implement counter?",
     a1: { a: "setCounter(counter++)", T: false },
     a2: { a: "addCounter(1)", T: false },
@@ -67,6 +91,68 @@ const react = [
     },
   },
   {
+    code: `
+    // Analyze code
+    useEffect(() => {
+      ...
+      return => {}
+    }, [input])
+`,
+    a1: { a: "There's an error at line 3.", T: false },
+    a2: { a: "There's an error at line 5.", T: true },
+    a3: { a: "There's an error at line 6.", T: false },
+    a4: { a: "There's no error in the code.", T: false },
+  },
+  {
+    code: `
+    // Explain line 5.
+    useEffect(() => {
+      ...
+      return () => {}
+    }, [input])
+`,
+    a1: { a: "It returns some value after our effect runs.", T: false },
+    a2: {
+      a:
+        "It is a cleanup function that allows us to clean up any subscripttions after component mounts.",
+      T: false,
+    },
+    a3: {
+      a:
+        "It is a way to use this.setState in functional components, only in return can we set any value to local state.",
+      T: false,
+    },
+    a4: {
+      a:
+        "It is used to simulate componentWillUnmount in functional components.",
+      T: true,
+    },
+  },
+  {
+    code: `
+    // Analyze code
+    const mapDispatchToProps = dispatch => ({
+      clearItem: item => dispatch(clearFromCart(item)),
+      addItem: item => dispatch(addItem(item)),
+      removeItem: item => dispatch(removeItem(item))
+    })
+`,
+    a1: {
+      a:
+        "We need to pass dispatch and item as arguments of mapDispatchToProps.",
+      T: false,
+    },
+    a2: {
+      a: "dispatch and item arguments should be wrapped inside ( ).",
+      T: false,
+    },
+    a3: {
+      a: "We can't use arrow functions inside mapDispatchToProps.",
+      T: false,
+    },
+    a4: { a: "There's no error in the code.", T: true },
+  },
+  {
     question: "How does a class-based component render HTML elements?",
     a1: { a: "render( <h1> Hello World </h1> )", T: false },
     a2: { a: "return render({ <h1> Hello World </h1> })", T: false },
@@ -104,6 +190,22 @@ const react = [
   },
   {
     code: `
+    // Link comes from React Router
+    // Analyze code
+    return(
+      <>
+        <Link to="home"> Home </Link>
+        <Link to="about"> About </Link>
+      </>
+    )
+`,
+    a1: { a: "We must use <a /> tag inside of link for navigation.", T: false },
+    a2: { a: "Lines 5 and 8 are not valid React.", T: false },
+    a3: { a: "We must use Route instead of Link for routing.", T: false },
+    a4: { a: "to='/home' and to='/about' is the correct syntax.", T: true },
+  },
+  {
+    code: `
     // Is there an error?
     const handleChange = (prop) => (event) => {
       setValues({ ...values, [prop]: event.target.value });
@@ -111,7 +213,7 @@ const react = [
 `,
     a1: { a: "prop shouldn't be inside of [ ].", T: false },
     a2: { a: "...values should be removed.", T: false },
-    a3: { a: "event.target.value will always return undefined.", T: false },
+    a3: { a: "(prop) => (event) => { } is not a valid syntax.", T: false },
     a4: { a: "There's no error in code.", T: true },
   },
   {
@@ -133,6 +235,85 @@ const react = [
   },
   {
     code: `
+    // <Avatar /> comes from Material-UI library
+    // Is there an error?
+    <Avatar
+      variant="square"
+      src={ require("../../assets/postIcons/react.svg") }
+      alt="Post language"
+    />
+`,
+    a1: { a: "require() should have a .default at the end.", T: true },
+    a2: {
+      a:
+        "require() is not valid in react, we must use import ' ' from ' ' syntax.",
+      T: false,
+    },
+    a3: { a: "We don't need { } in src=require(...).", T: false },
+    a4: { a: "There's no error in code.", T: false },
+  },
+  {
+    code: `
+    // Analyze code
+    setValue({
+      firstName: firstName,
+      lastName,
+      address: address,
+    });
+`,
+    a1: { a: "There's an error at line 3.", T: false },
+    a2: { a: "There's an error at line 5.", T: false },
+    a3: { a: "There's an error at line 6.", T: false },
+    a4: { a: "There's no error in the code.", T: true },
+  },
+  {
+    code: `
+    // Explain Code
+    return(
+      <>
+        ...
+      </>
+    )
+`,
+    a1: {
+      a:
+        "<> is example of Empty Component, it improves the performance of our app.",
+      T: false,
+    },
+    a2: {
+      a:
+        "<> is example of React Fragment, it allows us to render multiple DOM elements without rendering any container.",
+      T: true,
+    },
+    a3: {
+      a:
+        "<> is example of Empty Div, it renders as regular div but can't take any attributes.",
+      T: false,
+    },
+    a4: {
+      a:
+        "<> is example of React Container, if we wan't to render any react component we need to do it inside of this container instead of regular div.",
+      T: false,
+    },
+  },
+  {
+    code: `
+    // Analyze code
+      constructor(props){
+          super(props)
+          this.setState = {
+              signInEmail: '',
+              signInPassword: ''
+          }
+      }
+`,
+    a1: { a: "There's an error at line 3.", T: false },
+    a2: { a: "There's an error at line 4.", T: false },
+    a3: { a: "There's an error at line 5.", T: true },
+    a4: { a: "There's no error in the code.", T: false },
+  },
+  {
+    code: `
     // Is there an error?
     React.render(
       <Provider store={store}>
@@ -145,7 +326,11 @@ const react = [
 `,
     a1: { a: "document.getElementById('#root') is correct.", T: false },
     a2: { a: "Only ReactDOM can render components, not React.", T: true },
-    a3: { a: "Provider and BrowserRouter should be removed.", T: false },
+    a3: {
+      a:
+        "Provider and BrowserRouter should be removed, react.render takes only one component as its first argument.",
+      T: false,
+    },
     a4: { a: "There's no error in code.", T: false },
   },
   {
@@ -189,6 +374,34 @@ const react = [
   },
   {
     code: `
+    // Explain code
+    useEffect(() => {
+      ...
+    }, [])
+`,
+    a1: {
+      a:
+        "useEffect is similar to componentDidMount and componentDidUpdate, but for functional components.",
+      T: true,
+    },
+    a2: {
+      a:
+        "useEffect is similar to componentDidMount and componentWillUpdate, but for functional components.",
+      T: false,
+    },
+    a3: {
+      a:
+        "useEffect is similar to componentWillUnmount and componentDidUpdate, but for functional components.",
+      T: false,
+    },
+    a4: {
+      a:
+        "useEffect is similar to componentWillMount and shouldComponentUpdate, but for functional components.",
+      T: false,
+    },
+  },
+  {
+    code: `
     // Is there an error?
     import { addStore } from "@reduxjs/toolkit";
     import userReducer from "./user/userSlice";
@@ -200,7 +413,7 @@ const react = [
     });
 `,
     a1: {
-      a: "Extra pair of {}, correct syntax is addStore( reducer: {} ).",
+      a: "Extra pair of { }, correct syntax is addStore( reducer: { } ).",
       T: false,
     },
     a2: { a: "addStore does not exist, it should be configureStore.", T: true },
@@ -223,6 +436,26 @@ const react = [
       T: true,
     },
     a4: { a: "No such thing exists in React.", T: false },
+  },
+  {
+    code: `
+    // Analyze code
+    const Component = ({ name }) => {
+      return(
+        <h1> { props.name } </h1>
+      )
+    }
+`,
+    a1: {
+      a: "There's an error at line 3, we can't destructore props.",
+      T: false,
+    },
+    a2: {
+      a: "The component needs to have render method before return.",
+      T: false,
+    },
+    a3: { a: "It should be just name, not props.name.", T: true },
+    a4: { a: "There's no need to wrap props.name in { }.", T: false },
   },
   {
     question: "What are Error Boundaries in React?",
@@ -353,7 +586,7 @@ const react = [
     },
     a3: {
       a:
-        "Multiple source of truth, State is read only, Changes are made with arrow functions.",
+        "Multiple sources of truth, State is read only, Changes are made with arrow functions.",
       T: false,
     },
     a4: {
@@ -415,6 +648,50 @@ const react = [
     a2: { a: "There's an error in lines 5 and 8.", T: false },
     a3: { a: "There's an error in line 6.", T: false },
     a4: { a: "There's an error in line 7.", T: true },
+  },
+  {
+    code: `
+    // Analyze code
+    it('expect to render CardList', () => {
+      const mockRobots = [{
+        id: 1,
+        name: 'John',
+        email: 'Johnny'
+      }]
+      expect(shallow(<CardList robots={mockRobots} />)).toMatchSnapshot()
+  })
+`,
+    a1: { a: "mockRobots must be an object, not an array.", T: false },
+    a2: { a: "Shallow and Expect should switch place.", T: false },
+    a3: {
+      a: "We need to provide an object to toMatchSnapshot function.",
+      T: false,
+    },
+    a4: { a: "There's no error in the code.", T: true },
+  },
+  {
+    code: `
+    // Analyze code
+    const mapDispatchToProps = () => {
+      return {
+        onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
+        onRequestRobots: () => dispatch(requestRobots())
+      }
+    }
+`,
+    a1: {
+      a: "dispatch should be removed from onSearchChange and onRequestRobots.",
+      T: false,
+    },
+    a2: {
+      a: "We need to provide event as an argument of onRequestRobots.",
+      T: false,
+    },
+    a3: {
+      a: "We need to provide dispatch as an argument of mapDispatchToProps.",
+      T: true,
+    },
+    a4: { a: "There's no error in the code.", T: false },
   },
 ];
 

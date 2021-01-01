@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { axiosFetch } from "../../axios";
 import { ReactComponent as Pepe } from "../../assets/error.svg";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
@@ -14,15 +13,22 @@ import BookmarkIcon from "@material-ui/icons/Bookmark";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import ShareIcon from "@material-ui/icons/Share";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import {
   Avatar,
-  CardHeader,
   CircularProgress,
   Divider,
   IconButton,
   makeStyles,
 } from "@material-ui/core";
+import {
+  selectAccessToken,
+  selectIsAdmin,
+  selectUser,
+} from "../../redux/user/userSlice";
+import { useSelector } from "react-redux";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,13 +66,24 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: "40%",
   },
+  del: {
+    color: theme.palette.error.main,
+  },
+  edit: {
+    color: theme.palette.info.main,
+  },
 }));
 
 const PostPage = () => {
   const classes = useStyles();
   const params = useParams();
+  const history = useHistory();
   // const isAuthenticated = useSelector(selectIsAuthenticated);
-  // const isAdmin = useSelector(selectIsAdmin);
+  const { enqueueSnackbar } = useSnackbar();
+  const isAdmin = useSelector(selectIsAdmin);
+  const userInfo = useSelector(selectUser);
+  const token = useSelector(selectAccessToken);
+
   const [starred, setStarred] = useState(false);
   const [booked, setBooked] = useState(false);
 
@@ -76,10 +93,50 @@ const PostPage = () => {
   const [loading, setLoading] = useState(true);
 
   const toggleStar = () => {
-    setStarred(!starred);
+    axiosFetch
+      .post(
+        "/posts/star",
+        {
+          postId: post._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setStarred(!starred);
+      });
   };
+
   const toggleBook = () => {
     setBooked(!booked);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(`http://localhost:3000/post/${post._id}`);
+    enqueueSnackbar(`Copied to Clipboard!`, {
+      variant: `success`,
+    });
+  };
+
+  const submitDelete = () => {
+    axiosFetch
+      .post(
+        "/posts/delete",
+        {
+          postId: post._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        history.push("/");
+      });
   };
 
   useEffect(() => {
@@ -93,12 +150,15 @@ const PostPage = () => {
         setLoading(false);
         setPost(res.data);
         setIcon(require(`../../assets/postIcons/${res.data.lang}.svg`));
+        if (res.data.usersStar.indexOf(userInfo?.displayName) !== -1) {
+          setStarred(true);
+        }
       })
       .catch((err) => {
         setError(true);
         setLoading(false);
       });
-  }, [params.id]);
+  }, [params.id, starred, userInfo.displayName]);
 
   return (
     <div className={classes.root}>
@@ -123,9 +183,16 @@ const PostPage = () => {
 
               <div className={classes.grow}></div>
 
-              <IconButton>
-                <MoreHorizIcon />
-              </IconButton>
+              {userInfo?.displayName === post?.user.displayName ? (
+                <IconButton className={classes.edit}>
+                  <EditIcon />
+                </IconButton>
+              ) : null}
+              {isAdmin || userInfo?.displayName === post?.user.displayName ? (
+                <IconButton onClick={submitDelete} className={classes.del}>
+                  <DeleteIcon />
+                </IconButton>
+              ) : null}
             </CardActions>
             <Divider />
 
@@ -140,7 +207,7 @@ const PostPage = () => {
             </CardContent>
 
             <CardActions>
-              <IconButton>
+              <IconButton onClick={copyToClipboard}>
                 <ShareIcon />
               </IconButton>
               <IconButton onClick={toggleBook}>
@@ -157,7 +224,7 @@ const PostPage = () => {
                   <StarIcon className={classes.gold} />
                 )}
               </IconButton>
-              <Typography>{post?.stars}</Typography>
+              <Typography>{post?.usersStar.length}</Typography>
 
               <div className={classes.grow}></div>
 

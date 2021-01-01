@@ -10,10 +10,11 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { axiosFetch } from "../../axios";
 import { selectAccessToken } from "../../redux/user/userSlice";
+import Timer from "react-compound-timer";
 
 const useStyles = makeStyles({
   root: {
@@ -40,6 +41,12 @@ const useStyles = makeStyles({
     top: 14,
     left: 14,
   },
+  timer: {
+    position: "absolute",
+    top: 14,
+    right: 14,
+    fontWeight: 600,
+  },
 });
 
 const Quiz = () => {
@@ -55,21 +62,24 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
 
   // Anti-cheat
-  const handleMouseOut = (e) => {
-    if (
-      e.clientY <= 0 ||
-      e.clientX <= 0 ||
-      e.clientX >= window.innerWidth ||
-      e.clientY >= window.innerHeight
-    ) {
-      history.push("/earn-badge");
-      enqueueSnackbar(`Test Failed | No cheating!`, {
-        variant: `error`,
-      });
-    }
-  };
+  const handleMouseOut = useCallback(
+    (e) => {
+      if (
+        e.clientY <= 0 ||
+        e.clientX <= 0 ||
+        e.clientX >= window.innerWidth ||
+        e.clientY >= window.innerHeight
+      ) {
+        history.push("/earn-badge");
+        enqueueSnackbar(`Test Failed | No cheating!`, {
+          variant: `error`,
+        });
+      }
+    },
+    [enqueueSnackbar, history]
+  );
 
-  const generateRandQuestions = () => {
+  const generateRandQuestions = useCallback(() => {
     const allQs = require(`./questions/${params.subject}Q`).default;
     const res = [];
 
@@ -77,17 +87,17 @@ const Quiz = () => {
 
     for (;;) {
       const randomQ = Math.floor(Math.random() * allQs.length);
-      if (res.length === 10) break;
+      if (res.length === 15) break;
       if (res.indexOf(allQs[randomQ]) !== -1) {
         continue;
       }
       res.push(allQs[randomQ]);
     }
     setAllQuestions(res);
-  };
+  }, [params.subject]);
 
   const submitAnswer = (a) => {
-    if (counter === 10) return;
+    if (counter === 15) return;
 
     if (currentQuestion[`${a}`].T) setScore(score + 1);
 
@@ -95,14 +105,20 @@ const Quiz = () => {
     setCounter(counter + 1);
   };
 
-  useEffect(() => {
-    if (counter === 10) {
-      getResults();
-    }
-  }, [counter]);
+  const outOfTime = () => {
+    history.push("/earn-badge");
+    enqueueSnackbar(`Test Failed | Out of Time!`, {
+      variant: `error`,
+    });
+  };
+  const halfOfTime = () => {
+    enqueueSnackbar(`2:30 Minutes Remaining!`, {
+      variant: `warning`,
+    });
+  };
 
-  const getResults = () => {
-    if (score > 0) {
+  const getResults = useCallback(() => {
+    if (score > 14) {
       history.push("/earn-badge");
       axiosFetch
         .post(
@@ -127,19 +143,28 @@ const Quiz = () => {
           });
         });
     } else {
-      enqueueSnackbar(`Test Failed | ${score}/10 points!`, {
+      history.push("/earn-badge");
+      enqueueSnackbar(`Test Failed | ${score}/15 points!`, {
         variant: `error`,
       });
     }
-  };
+  }, [enqueueSnackbar, history, score, token, params.subject]);
 
   useEffect(() => {
-    // Function to get 10 random question from list of all
-    generateRandQuestions();
+    if (counter === 15) {
+      getResults();
+    }
+  }, [counter, getResults]);
 
+  useEffect(() => {
+    // Function to get 15 random question from list of all
+    generateRandQuestions();
+  }, [generateRandQuestions]);
+
+  useEffect(() => {
     document.addEventListener("mouseleave", handleMouseOut);
     return () => document.removeEventListener("mouseleave", handleMouseOut);
-  }, []);
+  }, [handleMouseOut]);
 
   useEffect(() => {
     setCurrentQuestion(allQuestions[0]);
@@ -148,14 +173,35 @@ const Quiz = () => {
   return (
     <div className={classes.root}>
       <Paper elevation={5} className={classes.questionBox}>
-        <Typography className={classes.count}>{counter}/9</Typography>
+        <Typography className={classes.count}>{counter + 1}/15</Typography>
+        <div className={classes.timer}>
+          <Timer
+            initialTime={300000}
+            direction="backward"
+            checkpoints={[
+              { time: 0, callback: () => outOfTime() },
+              { time: 150000, callback: () => halfOfTime() },
+            ]}
+          >
+            <>
+              <Timer.Minutes /> m <Timer.Seconds /> s
+            </>
+          </Timer>
+        </div>
+
         {currentQuestion?.question ? (
           <Typography variant="h5">{currentQuestion.question}</Typography>
         ) : null}
         {currentQuestion?.code ? (
           <SyntaxHighlighter
             showLineNumbers
-            language="javascript"
+            language={
+              params.subject === "react"
+                ? "jsx"
+                : params.subject === "python"
+                ? "python"
+                : ""
+            }
             style={vscDarkPlus}
           >
             {currentQuestion.code}

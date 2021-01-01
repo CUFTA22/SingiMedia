@@ -4,7 +4,6 @@ import EventIcon from "@material-ui/icons/Event";
 import TodayIcon from "@material-ui/icons/Today";
 import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import StarIcon from "@material-ui/icons/Star";
-import SettingsEthernetIcon from "@material-ui/icons/SettingsEthernet";
 import TuneIcon from "@material-ui/icons/Tune";
 import { makeStyles, MenuItem, TextField } from "@material-ui/core";
 import { fetchPostsAsync } from "../../redux/posts/postsSlice";
@@ -58,7 +57,7 @@ const HPFilters = () => {
 
   useEffect(() => {
     dispatch(fetchPostsAsync());
-  }, []);
+  }, [dispatch]);
 
   const handleFetchNew = (prop) => {
     dispatch(fetchPostsAsync(prop, filters.count));

@@ -11,16 +11,28 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import ShareIcon from "@material-ui/icons/Share";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  // selectIsAdmin,
+  selectAccessToken,
+  selectIsAdmin,
   selectIsAuthenticated,
+  selectUser,
 } from "../../redux/user/userSlice";
 import { useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { axiosFetch } from "../../axios";
+import { removeOne } from "../../redux/posts/postsSlice";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
+  del: {
+    color: theme.palette.error.main,
+  },
+  edit: {
+    color: theme.palette.info.main,
+  },
   card: {
     width: 320,
   },
@@ -38,12 +50,14 @@ const useStyles = makeStyles(() => ({
   grow: {
     flexGrow: 1,
   },
+  clickable: {
+    cursor: "pointer",
+  },
 }));
 
 const Post = ({
   id,
-  stars,
-  // userStars,
+  usersStar,
   username,
   title,
   ghLink,
@@ -52,13 +66,47 @@ const Post = ({
   loading,
 }) => {
   const [starred, setStarred] = useState(false);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  // const isAdmin = useSelector(selectIsAdmin);
+  const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAdmin = useSelector(selectIsAdmin);
+  const token = useSelector(selectAccessToken);
+  const userInfo = useSelector(selectUser);
 
-  const toggleStar = () => {
-    setStarred(!starred);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(`http://localhost:3000/post/${id}`);
+    enqueueSnackbar(`Copied to Clipboard!`, {
+      variant: `success`,
+    });
   };
+
+  const submitDelete = () => {
+    axiosFetch
+      .post(
+        "/posts/delete",
+        {
+          postId: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        dispatch(removeOne({ id }));
+      });
+  };
+
+  useEffect(() => {
+    if (usersStar?.indexOf(userInfo?.displayName) !== -1) {
+      setStarred(true);
+    } else {
+      setStarred(false);
+    }
+  }, [usersStar, userInfo.displayName]);
+
   const classes = useStyles();
   return (
     <Card elevation={6} className={classes.card}>
@@ -78,13 +126,27 @@ const Post = ({
         {loading ? (
           <Skeleton variant="text" width={100} height={20} />
         ) : (
-          <Typography>{username}</Typography>
+          <Typography
+            className={classes.clickable}
+            onClick={() => history.push(`/user/${username}`)}
+          >
+            {username}
+          </Typography>
         )}
         <div className={classes.grow}></div>
         {loading ? null : (
-          <IconButton>
-            <MoreHorizIcon />
-          </IconButton>
+          <>
+            {userInfo?.displayName === username ? (
+              <IconButton className={classes.edit}>
+                <EditIcon />
+              </IconButton>
+            ) : null}
+            {isAdmin || userInfo?.displayName === username ? (
+              <IconButton onClick={submitDelete} className={classes.del}>
+                <DeleteIcon />
+              </IconButton>
+            ) : null}
+          </>
         )}
       </CardActions>
       <Divider />
@@ -103,19 +165,19 @@ const Post = ({
           <Skeleton width={120} height={30} />
         ) : (
           <>
-            <IconButton>
+            <IconButton onClick={copyToClipboard}>
               <ShareIcon />
             </IconButton>
             {isAuthenticated ? (
               <>
-                <IconButton onClick={toggleStar}>
+                <IconButton disabled>
                   {!starred ? (
                     <StarBorderIcon />
                   ) : (
                     <StarIcon className={classes.gold} />
                   )}
                 </IconButton>
-                <Typography>{stars}</Typography>
+                <Typography>{usersStar?.length}</Typography>
               </>
             ) : null}
           </>

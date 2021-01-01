@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { axiosFetch } from "../../axios";
 import {
@@ -10,7 +10,8 @@ import {
 const Auth = () => {
   const dispatch = useDispatch();
 
-  const checkAuth15min = () => {
+  // Linter screams at me if i don't wrap it in useCallback
+  const checkAuth15min = useCallback(() => {
     setTimeout(() => {
       console.log("Silent Auth");
       axiosFetch
@@ -29,7 +30,7 @@ const Auth = () => {
 
       checkAuth15min();
     }, 840000);
-  };
+  }, [dispatch]);
 
   // On every refresh
   useEffect(() => {

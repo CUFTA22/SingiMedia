@@ -26,6 +26,14 @@ export const postsSlice = createSlice({
       // });
       state.posts = action.payload;
     },
+    removeOne: (state, action) => {
+      for (let i = 0; i < state.posts.length; i++) {
+        if (state.posts[i]._id === action.payload.id) {
+          state.posts.splice(i, 1);
+          i--;
+        }
+      }
+    },
   },
 });
 
@@ -34,6 +42,7 @@ export const {
   fetchPostsSUCCESS,
   fetchPostsFAILED,
   setPosts,
+  removeOne,
 } = postsSlice.actions;
 
 export const selectPostsLoading = (state) => state.posts.isLoading;

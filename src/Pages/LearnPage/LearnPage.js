@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Post from "../../Components/Post/Post";
 import Grid from "@material-ui/core/Grid";
 import { topics } from "./topics";
 import LearnTopic from "../../Components/LearnTopic/LearnTopic";

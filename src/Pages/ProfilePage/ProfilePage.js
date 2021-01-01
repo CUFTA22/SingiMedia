@@ -1,7 +1,6 @@
 import {
   Avatar,
   Chip,
-  Fab,
   makeStyles,
   Paper,
   Tab,
