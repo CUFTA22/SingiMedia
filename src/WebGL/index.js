@@ -4,6 +4,7 @@ import { Canvas } from "react-three-fiber";
 import { OrbitControls, Stars } from "drei";
 import "./styles.css";
 import { Globe } from "./Globe";
+import { Logo } from "./Logo";
 
 const index = () => {
   return (

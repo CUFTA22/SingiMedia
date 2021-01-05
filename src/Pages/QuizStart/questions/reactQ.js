@@ -70,13 +70,6 @@ const react = [
   },
   {
     question: "The correct syntax is:",
-    a1: { a: "fetch.use('url').then(x => x.text() ).then(...)", T: false },
-    a2: { a: "fetch('post', 'url').then(x => x.text() ).then(...)", T: false },
-    a3: { a: "fetch('url').then(x => x.text() ).then(...)", T: true },
-    a4: { a: "fetch.url('url').get(x => x.text() ).then(...)", T: false },
-  },
-  {
-    question: "The correct syntax is:",
     a1: {
       a: "axios.fetch('url').then(res => res.json() ).then(...)",
       T: false,
