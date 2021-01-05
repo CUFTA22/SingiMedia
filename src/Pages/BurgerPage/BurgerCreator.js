@@ -54,7 +54,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const PizzaForm = ({ socket }) => {
+const BurgerCreator = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const ingredients = useSelector(selectIngredients);
@@ -166,4 +166,4 @@ const PizzaForm = ({ socket }) => {
   );
 };
 
-export default PizzaForm;
+export default BurgerCreator;
