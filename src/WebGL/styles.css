@@ -1,0 +1,11 @@
+.canvas {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(
+    at 50% 100%,
+    #1a273d 0%,
+    #121216 40%,
+    #0e0e14 80%,
+    #020205 100%
+  );
+}

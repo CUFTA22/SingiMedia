@@ -12,14 +12,19 @@ const PostPage = lazy(() => import("../Pages/PostPage/PostPage"));
 const LearnPage = lazy(() => import("../Pages/LearnPage/LearnPage"));
 const QuizPage = lazy(() => import("../Pages/Quiz/Quiz"));
 const QuizStart = lazy(() => import("../Pages/QuizStart/QuizStart"));
+const WebGL = lazy(() => import("../WebGL/index"));
+const BurgerPage = lazy(() => import("../Pages/BurgerPage/BurgerPage"));
 
 const Routes = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   return (
     <>
       <Route exact path="/" component={HomePage} />
-      <Route exact path="/post/:id" component={PostPage} />
       <Route exact path="/learn" component={LearnPage} />
+      <Route exact path="/webGL" component={WebGL} />
+      <Route exact path="/burger" component={BurgerPage} />
+
+      <Route path="/post/:id" component={PostPage} />
       <Route path="/user/:displayName" component={ProfilePage} />
 
       <Route

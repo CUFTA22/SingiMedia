@@ -1,9 +1,9 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { axiosFetch } from "../../axios";
-import { selectAccessToken } from "../../redux/user/userSlice";
+import { selectPosts, setPosts } from "../../redux/posts/postsSlice";
 import Post from "../Post/Post";
 
 const useStyles = makeStyles(() => ({
@@ -15,31 +15,26 @@ const useStyles = makeStyles(() => ({
 
 const ProfilePostsUser = () => {
   const classes = useStyles();
-  const [posts, setPosts] = useState([null]);
   const [loading, setLoading] = useState(true);
   const params = useParams();
-  const token = useSelector(selectAccessToken);
+  const posts = useSelector(selectPosts);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (token) {
-      axiosFetch
-        .get("posts/forOneUser", {
-          params: {
-            displayName: params.displayName,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setPosts(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          setLoading(true);
-        });
-    }
-  }, [token, params.displayName]);
+    axiosFetch
+      .get("posts/forOneUser", {
+        params: {
+          displayName: params.displayName,
+        },
+      })
+      .then((res) => {
+        dispatch(setPosts(res.data));
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(true);
+      });
+  }, [params.displayName, dispatch]);
 
   return (
     <Grid
@@ -49,8 +44,8 @@ const ProfilePostsUser = () => {
       alignItems="center"
       spacing={4}
     >
-      {posts?.map((post, idx) => (
-        <Grid key={idx} item>
+      {posts?.map((post) => (
+        <Grid key={post?._id} item>
           <Post
             id={post?._id}
             username={post?.user.displayName}
@@ -58,7 +53,7 @@ const ProfilePostsUser = () => {
             desc={post?.desc}
             ghLink={post?.ghLink}
             lang={post?.lang}
-            stars={post?.stars}
+            usersStar={post?.usersStar}
             loading={loading}
           />
         </Grid>

@@ -11,6 +11,11 @@ import { useSnackbar } from "notistack";
 import { selectAccessToken, setUser } from "../../redux/user/userSlice";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    "& div.MuiDialog-paper": {
+      maxWidth: 650,
+    },
+  },
   esc: {
     color: theme.palette.error.main,
     position: "absolute",
@@ -60,12 +65,7 @@ const AvatarModal = ({ open, handleClose }) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
+    <Dialog open={open} onClose={handleClose} className={classes.root}>
       <IconButton className={classes.esc} onClick={handleClose} color="default">
         <CloseIcon />
       </IconButton>

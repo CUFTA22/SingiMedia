@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBarBottom: {
-    position: "sticky",
+    position: "fixed",
     width: "100%",
     [theme.breakpoints.down("xs")]: {
       position: "fixed",
@@ -145,7 +145,6 @@ const Header = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const userIsLoading = useSelector(selectUserIsLoading);
   const userInfo = useSelector(selectUser);
-
   const [state, setState] = React.useState(false);
 
   const toggleDrawer = (open) => (event) => {
@@ -155,7 +154,6 @@ const Header = () => {
     ) {
       return;
     }
-
     setState(open);
   };
 

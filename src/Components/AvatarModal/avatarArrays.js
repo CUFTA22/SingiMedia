@@ -5,15 +5,25 @@ export const maleAvatars = [
   "male4",
   "male5",
   "male6",
+  "male7",
 ];
 
 export const femaleAvatars = [
-  "female2",
-  "female1",
   "female3",
+  "female1",
+  "female2",
   "female4",
   "female5",
+  "female7",
   "female6",
 ];
 
-export const otherAvatars = ["singi", "apache"];
+export const otherAvatars = [
+  "singi",
+  "abs1",
+  "abs2",
+  "abs3",
+  "abs4",
+  "abs5",
+  "apache",
+];

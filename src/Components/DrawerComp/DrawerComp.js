@@ -11,6 +11,8 @@ import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import Brightness2Icon from "@material-ui/icons/Brightness2";
 import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
 import SchoolRoundedIcon from "@material-ui/icons/SchoolRounded";
+import FastfoodIcon from "@material-ui/icons/Fastfood";
+import PublicIcon from "@material-ui/icons/Public";
 import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
 import { ReactComponent as SingiLogo } from "../../assets/SingiLogo.svg";
 import {
@@ -122,6 +124,20 @@ const DrawerComp = ({ toggleDrawer, state }) => {
               <SchoolRoundedIcon />
             </ListItemIcon>
             <ListItemText primary={"Start Learning"} />
+          </ListItem>
+
+          <ListItem onClick={() => history.push("/webGL")} button>
+            <ListItemIcon>
+              <PublicIcon />
+            </ListItemIcon>
+            <ListItemText primary={"WebGL Demo"} />
+          </ListItem>
+
+          <ListItem onClick={() => history.push("/burger")} button>
+            <ListItemIcon>
+              <FastfoodIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Burger Builder"} />
           </ListItem>
 
           <Divider />

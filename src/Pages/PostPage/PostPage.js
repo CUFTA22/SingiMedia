@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { axiosFetch } from "../../axios";
 import { ReactComponent as Pepe } from "../../assets/error.svg";
 import Card from "@material-ui/core/Card";
@@ -19,12 +20,14 @@ import {
   Avatar,
   CircularProgress,
   Divider,
+  Fab,
   IconButton,
   makeStyles,
 } from "@material-ui/core";
 import {
   selectAccessToken,
   selectIsAdmin,
+  selectIsAuthenticated,
   selectUser,
 } from "../../redux/user/userSlice";
 import { useSelector } from "react-redux";
@@ -33,17 +36,20 @@ import { useSnackbar } from "notistack";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "80%",
-    margin: "40px auto 30px auto",
+    margin: "100px auto 30px auto",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
-      width: "100%",
-      padding: "10px 10px 0 10px",
+    [theme.breakpoints.down("xs")]: {
+      width: "90%",
+      margin: "30px auto 120px auto",
     },
   },
   card: {
-    maxWidth: 600,
+    width: 600,
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
   },
   gold: {
     color: "#f2af4c",
@@ -57,6 +63,21 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: "#f1f8ff",
       background: "#24292a",
+    },
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
+  ghs: {
+    color: "#fafbfc",
+    background: "#24292e",
+    display: "none",
+    "&:hover": {
+      color: "#f1f8ff",
+      background: "#24292a",
+    },
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
     },
   },
   grow: {
@@ -78,7 +99,7 @@ const PostPage = () => {
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
-  // const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const { enqueueSnackbar } = useSnackbar();
   const isAdmin = useSelector(selectIsAdmin);
   const userInfo = useSelector(selectUser);
@@ -162,6 +183,10 @@ const PostPage = () => {
 
   return (
     <div className={classes.root}>
+      <Helmet>
+        <title>{post?.title}</title>
+        <meta name="description" content={post?.desc} />
+      </Helmet>
       {!loading ? (
         error ? (
           <>
@@ -210,21 +235,26 @@ const PostPage = () => {
               <IconButton onClick={copyToClipboard}>
                 <ShareIcon />
               </IconButton>
-              <IconButton onClick={toggleBook}>
-                {!booked ? (
-                  <BookmarkBorderIcon />
-                ) : (
-                  <BookmarkIcon className={classes.book} />
-                )}
-              </IconButton>
-              <IconButton onClick={toggleStar}>
-                {!starred ? (
-                  <StarBorderIcon />
-                ) : (
-                  <StarIcon className={classes.gold} />
-                )}
-              </IconButton>
-              <Typography>{post?.usersStar.length}</Typography>
+              {isAuthenticated ? (
+                <>
+                  {" "}
+                  <IconButton onClick={toggleBook}>
+                    {!booked ? (
+                      <BookmarkBorderIcon />
+                    ) : (
+                      <BookmarkIcon className={classes.book} />
+                    )}
+                  </IconButton>
+                  <IconButton onClick={toggleStar}>
+                    {!starred ? (
+                      <StarBorderIcon />
+                    ) : (
+                      <StarIcon className={classes.gold} />
+                    )}
+                  </IconButton>
+                  <Typography>{post?.usersStar.length}</Typography>{" "}
+                </>
+              ) : null}
 
               <div className={classes.grow}></div>
 
@@ -236,6 +266,9 @@ const PostPage = () => {
                 >
                   Visit Repo
                 </Button>
+                <Fab className={classes.ghs}>
+                  <GitHubIcon />
+                </Fab>
               </a>
             </CardActions>
           </Card>

@@ -1,19 +1,22 @@
 import {
   Avatar,
   Chip,
+  CircularProgress,
   makeStyles,
   Paper,
   Tab,
   Tabs,
   Typography,
 } from "@material-ui/core";
+import { Helmet } from "react-helmet";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { axiosFetch } from "../../axios";
-import { selectAccessToken, selectUser } from "../../redux/user/userSlice";
+import { selectUser } from "../../redux/user/userSlice";
 import { useParams } from "react-router-dom";
 import ProfilePostsUser from "../../Components/ProfilePostsUser/ProfilePostsUser";
 import AvatarModal from "../../Components/AvatarModal/AvatarModal";
+import { ReactComponent as Verified } from "../../assets/check.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +24,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
-    marginTop: 30,
+    marginTop: 100,
+    marginBottom: 20,
+    [theme.breakpoints.down("xs")]: {
+      marginTop: 30,
+    },
   },
   large: {
     width: theme.spacing(15),
@@ -35,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   chips: {
-    margin: "20px",
+    marginBottom: 20,
     width: "90%",
     display: "flex",
     justifyContent: "center",
@@ -46,6 +53,19 @@ const useStyles = makeStyles((theme) => ({
   },
   tab: {
     marginBottom: 24,
+  },
+  w100: {
+    width: "100%",
+  },
+  verified: {
+    width: 25,
+    height: 25,
+    position: "relative",
+    top: -35,
+    left: 80,
+  },
+  margin: {
+    marginBottom: 25,
   },
 }));
 
@@ -75,11 +95,10 @@ const ProfilePage = () => {
   const classes = useStyles();
   const [info, setInfo] = useState(null);
   const [value, setValue] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
-  const token = useSelector(selectAccessToken);
   const userInfo = useSelector(selectUser);
-
-  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -93,81 +112,104 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    // Since we send checkAuth request on every reload it can happen that we don't
-    // have accessToken in memory at the time of ProfilePage load. To avoid unexpected
-    // behavior we return in case token is not available.
-    if (!token) return;
-
     axiosFetch
       .get("/user/get", {
         params: {
           displayName: params.displayName,
         },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       })
       .then((res) => {
         setInfo(res.data);
+        setIsLoading(false);
       })
-      .catch((err) => alert("Unauthorized!"));
-  }, [token, params.displayName, userInfo]);
+      .catch((err) => {
+        setIsLoading(false);
+      });
+  }, [params.displayName, userInfo]);
 
   return (
     <div className={classes.root}>
-      <AvatarModal open={open} handleClose={() => handleClose()} />
-      <Avatar
-        onClick={
-          params.displayName === userInfo?.displayName
-            ? handleClickOpen
-            : undefined
-        }
-        src={
-          info ? require(`../../assets/avatars/${info.avatar}.svg`).default : ""
-        }
-        className={`${classes.large} ${
-          params.displayName === userInfo?.displayName && classes.hover
-        }`}
-      />
-      <Typography color="textSecondary" variant="h4">
-        {info?.displayName}
-      </Typography>
-      <div className={classes.chips}>
-        {info?.chips.map((chip) => (
-          <Chip
-            key={chip.lang}
-            avatar={
-              <Avatar
-                src={require(`../../assets/postIcons/${chip.lang}.svg`).default}
-              ></Avatar>
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Helmet>
+            <title>
+              {info
+                ? `${info?.displayName}'s Profile | Singi Media`
+                : "Loading Profile"}
+            </title>
+            <meta
+              name="description"
+              content={`Singi Media PWA is a platform for sharing GitHub code on the web. It is a single page application built in React with a bunch of other libraries that make a modern web application. Visit ${info?.displayName}'s profile`}
+            />
+          </Helmet>
+          <AvatarModal open={open} handleClose={() => handleClose()} />
+          <Avatar
+            onClick={
+              params.displayName === userInfo?.displayName
+                ? handleClickOpen
+                : undefined
             }
-            label={chip.desc}
-            variant="outlined"
-            clickable
+            src={
+              info
+                ? require(`../../assets/avatars/${info.avatar}.svg`).default
+                : ""
+            }
+            className={`${classes.large} ${
+              params.displayName === userInfo?.displayName && classes.hover
+            }`}
           />
-        ))}
-      </div>
-      <Paper elevation={0} square className={classes.tab}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="simple tabs example"
-          indicatorColor="primary"
-          textColor="primary"
-          centered
-        >
-          <Tab label="Users Posts" {...a11yProps(0)} />
-          {params.displayName === userInfo?.displayName && (
-            <Tab label="Saved Posts" {...a11yProps(1)} />
+
+          <Typography color="textSecondary" variant="h4">
+            {info?.displayName}
+          </Typography>
+          {info?.verified ? (
+            <Verified className={classes.verified} />
+          ) : (
+            <div className={classes.margin} />
           )}
-        </Tabs>
-      </Paper>
-      <TabPanel value={value} index={0}>
-        <ProfilePostsUser />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
+
+          <div className={classes.chips}>
+            {info?.chips.map((chip) => (
+              <Chip
+                key={chip.lang}
+                avatar={
+                  <Avatar
+                    src={
+                      require(`../../assets/postIcons/${chip.lang}.svg`).default
+                    }
+                  ></Avatar>
+                }
+                label={chip.desc}
+                variant="outlined"
+                clickable
+              />
+            ))}
+          </div>
+          <Paper elevation={0} square className={classes.tab}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Users Posts" {...a11yProps(0)} />
+              {params.displayName === userInfo?.displayName && (
+                <Tab label="Saved Posts" {...a11yProps(1)} />
+              )}
+            </Tabs>
+          </Paper>
+          <TabPanel className={classes.w100} value={value} index={0}>
+            <ProfilePostsUser />
+          </TabPanel>
+          <TabPanel className={classes.w100} value={value} index={1}>
+            Item Two
+          </TabPanel>
+        </>
+      )}
     </div>
   );
 };

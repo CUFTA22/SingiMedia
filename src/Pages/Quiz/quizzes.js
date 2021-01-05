@@ -39,9 +39,9 @@ export const quizzes = [
   //   diff: "Extreme",
   //   title: "FullStack Test",
   // },
-  {
-    icon: "sql",
-    diff: "Extreme",
-    title: "Database Test",
-  },
+  // {
+  //   icon: "sql",
+  //   diff: "Extreme",
+  //   title: "Database Test",
+  // },
 ];

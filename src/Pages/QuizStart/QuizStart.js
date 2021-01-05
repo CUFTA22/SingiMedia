@@ -6,6 +6,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
+import { Helmet } from "react-helmet";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useSelector } from "react-redux";
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "70px 0",
+    padding: "90px 0",
   },
   questionBox: {
     position: "relative",
@@ -55,7 +56,6 @@ const Quiz = () => {
   const history = useHistory(selectAccessToken);
   const token = useSelector(selectAccessToken);
   const { enqueueSnackbar } = useSnackbar();
-
   const [allQuestions, setAllQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [counter, setCounter] = useState(0);
@@ -151,10 +151,10 @@ const Quiz = () => {
   }, [enqueueSnackbar, history, score, token, params.subject]);
 
   useEffect(() => {
-    if (counter === 15) {
-      getResults();
-    }
-  }, [counter, getResults]);
+    // Anti-cheat
+    document.addEventListener("mouseleave", handleMouseOut);
+    return () => document.removeEventListener("mouseleave", handleMouseOut);
+  }, [handleMouseOut]);
 
   useEffect(() => {
     // Function to get 15 random question from list of all
@@ -162,9 +162,10 @@ const Quiz = () => {
   }, [generateRandQuestions]);
 
   useEffect(() => {
-    document.addEventListener("mouseleave", handleMouseOut);
-    return () => document.removeEventListener("mouseleave", handleMouseOut);
-  }, [handleMouseOut]);
+    if (counter === 15) {
+      getResults();
+    }
+  }, [counter, getResults]);
 
   useEffect(() => {
     setCurrentQuestion(allQuestions[0]);
@@ -172,6 +173,13 @@ const Quiz = () => {
 
   return (
     <div className={classes.root}>
+      <Helmet>
+        <title>{params.subject} Test | Singi Media</title>
+        <meta
+          name="description"
+          content="Singi Media PWA is a platform for sharing GitHub code on the web. It is a single page application built in React with a bunch of other libraries that make a modern web application."
+        />
+      </Helmet>
       <Paper elevation={5} className={classes.questionBox}>
         <Typography className={classes.count}>{counter + 1}/15</Typography>
         <div className={classes.timer}>

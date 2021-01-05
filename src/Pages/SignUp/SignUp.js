@@ -9,6 +9,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
+import { Helmet } from "react-helmet";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -141,6 +142,13 @@ const SignUp = () => {
 
   return (
     <div style={{ display: "flex" }}>
+      <Helmet>
+        <title>Sign Up | Singi Media</title>
+        <meta
+          name="description"
+          content="Singi Media PWA is a platform for sharing GitHub code on the web. It is a single page application built in React with a bunch of other libraries that make a modern web application. Create your account for free today!"
+        />
+      </Helmet>
       <Paper className={classes.bg}>
         <Card elevation={5} className={classes.card}>
           <CardMedia className={classes.media} title="Sign In">

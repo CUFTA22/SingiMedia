@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectAccessToken,
   selectIsAdmin,
-  selectIsAuthenticated,
   selectUser,
 } from "../../redux/user/userSlice";
 import { useHistory } from "react-router-dom";
@@ -51,7 +50,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   clickable: {
-    cursor: "pointer",
+    "&:hover": {
+      cursor: "pointer",
+      textDecoration: "underline",
+    },
   },
 }));
 
@@ -65,11 +67,11 @@ const Post = ({
   lang,
   loading,
 }) => {
+  const classes = useStyles();
   const [starred, setStarred] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
   const isAdmin = useSelector(selectIsAdmin);
   const token = useSelector(selectAccessToken);
   const userInfo = useSelector(selectUser);
@@ -105,9 +107,8 @@ const Post = ({
     } else {
       setStarred(false);
     }
-  }, [usersStar, userInfo.displayName]);
+  }, [usersStar, userInfo?.displayName]);
 
-  const classes = useStyles();
   return (
     <Card elevation={6} className={classes.card}>
       <CardActions>
@@ -137,7 +138,7 @@ const Post = ({
         {loading ? null : (
           <>
             {userInfo?.displayName === username ? (
-              <IconButton className={classes.edit}>
+              <IconButton>
                 <EditIcon />
               </IconButton>
             ) : null}
@@ -168,7 +169,7 @@ const Post = ({
             <IconButton onClick={copyToClipboard}>
               <ShareIcon />
             </IconButton>
-            {isAuthenticated ? (
+            {token ? (
               <>
                 <IconButton disabled>
                   {!starred ? (

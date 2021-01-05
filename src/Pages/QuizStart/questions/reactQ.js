@@ -62,7 +62,11 @@ const react = [
     a1: { a: "React follows uni-directional data flow.", T: true },
     a2: { a: "React follows bi-directional data flow.", T: false },
     a3: { a: "React uses Star-Shaped data flow.", T: false },
-    a4: { a: "React follows the Flux architecture.", T: false },
+    a4: {
+      a:
+        "React's data is only local to the component, held in state and can't be passed around.",
+      T: false,
+    },
   },
   {
     question: "The correct syntax is:",
@@ -101,6 +105,22 @@ const react = [
     a1: { a: "There's an error at line 3.", T: false },
     a2: { a: "There's an error at line 5.", T: true },
     a3: { a: "There's an error at line 6.", T: false },
+    a4: { a: "There's no error in the code.", T: false },
+  },
+  {
+    code: `
+    // Analyze code
+    render() {
+      return (
+        <div>
+          <myComponent />
+        </div>
+      )
+    }
+`,
+    a1: { a: "There's an error at line 3.", T: false },
+    a2: { a: "There's an error at line 4.", T: false },
+    a3: { a: "There's an error at line 6.", T: true },
     a4: { a: "There's no error in the code.", T: false },
   },
   {
@@ -153,11 +173,21 @@ const react = [
     a4: { a: "There's no error in the code.", T: true },
   },
   {
-    question: "How does a class-based component render HTML elements?",
-    a1: { a: "render( <h1> Hello World </h1> )", T: false },
-    a2: { a: "return render({ <h1> Hello World </h1> })", T: false },
-    a3: { a: "render() { return( <h1> Hello World </h1> ) }", T: true },
-    a4: { a: "return( <h1> Hello World </h1> )", T: false },
+    code: `
+    // Analyze code
+    render: {  
+      return(
+        <>
+          <ComponentA color="blue" value={6} />
+          <ComponentA color="red" value={3} ></ComponentA>
+        </>
+      );
+    }
+`,
+    a1: { a: "There's an error on line 3.", T: true },
+    a2: { a: "There's an error on line 6.", T: false },
+    a3: { a: "There's an error on line 7.", T: false },
+    a4: { a: "There's no error in code.", T: false },
   },
   {
     code: `
@@ -169,7 +199,7 @@ const react = [
       </BrowserRouter>
     </Switch>
 `,
-    a1: { a: "path='/post/id' is the correct syntax.", T: false },
+    a1: { a: "path='/post/:id' is invalid syntax.", T: false },
     a2: { a: "BrowserRouter and Switch should switch place.", T: true },
     a3: { a: "component={<AnyPage />} is the correct syntax.", T: false },
     a4: { a: "There's no error in code.", T: false },
@@ -187,6 +217,22 @@ const react = [
     a2: { a: "handleOnChange should be without leading this.", T: false },
     a3: { a: "render and return should switch place.", T: true },
     a4: { a: "There's no error in code.", T: false },
+  },
+  {
+    question:
+      "Keys are given to a list of elements in react. These keys should be -",
+    a1: { a: "Do not requires to be unique.", T: false },
+    a2: { a: "Unique in the DOM", T: false },
+    a3: { a: "Unique among the siblings only", T: true },
+    a4: { a: "Unique among the siblings only, and must be a number", T: false },
+  },
+  {
+    question:
+      "Which of the following is the correct data flow sequence of flux concept?",
+    a1: { a: "Dispatcher -> Action -> Store -> View.", T: false },
+    a2: { a: "Action -> Dispatcher -> View -> Store", T: false },
+    a3: { a: "Dispatcher -> Action -> View -> Store", T: false },
+    a4: { a: "Action -> Dispatcher -> Store -> View", T: true },
   },
   {
     code: `
@@ -652,6 +698,29 @@ const react = [
   {
     code: `
     // Analyze code
+    fetch('url', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.parse({
+          input: this.state.input
+      })
+    })
+    .then(res => res.json())
+    .then(res => {...})
+`,
+    a1: { a: "Post method can't have headers.", T: false },
+    a2: { a: "We have extra .then() that does nothing.", T: false },
+    a3: {
+      a: "Post method can't have body, instead we need to use params.",
+      T: false,
+    },
+    a4: { a: "We need to use JSON.stringify instead of JSON.parse.", T: true },
+  },
+  {
+    code: `
+    // Analyze code
     it('expect to render CardList', () => {
       const mockRobots = [{
         id: 1,
@@ -692,6 +761,13 @@ const react = [
       T: true,
     },
     a4: { a: "There's no error in the code.", T: false },
+  },
+  {
+    question: "How can we stop page from refreshing after submitting a form?",
+    a1: { a: "Using e.preventDefault().", T: true },
+    a2: { a: "Using e.revokeDefault().", T: false },
+    a3: { a: "Using e.avoidDefault().", T: false },
+    a4: { a: "Using e.stopDefault().", T: false },
   },
 ];
 

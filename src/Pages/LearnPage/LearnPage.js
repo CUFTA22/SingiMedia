@@ -1,26 +1,24 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import { Helmet } from "react-helmet";
 import { topics } from "./topics";
 import LearnTopic from "../../Components/LearnTopic/LearnTopic";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "80%",
-    margin: "0 auto 30px auto",
-    paddingTop: 20,
+    width: "100%",
+    margin: "80px auto 30px auto",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       width: "100%",
-      padding: "10px 10px 0 10px",
+      margin: "10px auto 100px auto",
     },
   },
-
   grid: {
     width: "100%",
-    margin: 0,
   },
 }));
 
@@ -29,6 +27,13 @@ const LearnPage = () => {
 
   return (
     <div className={classes.root}>
+      <Helmet>
+        <title>Learn | Singi Media</title>
+        <meta
+          name="description"
+          content="Singi Media PWA is a platform for sharing GitHub code on the web. It is a single page application built in React with a bunch of other libraries that make a modern web application. Start learning now."
+        />
+      </Helmet>
       <Grid
         className={classes.grid}
         container

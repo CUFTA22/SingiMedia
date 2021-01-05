@@ -11,6 +11,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { Helmet } from "react-helmet";
 import AddIcon from "@material-ui/icons/Add";
 import { langs } from "./langOptions";
 import { useSelector } from "react-redux";
@@ -21,10 +22,13 @@ import { useHistory } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    paddingTop: 40,
+    paddingTop: 120,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      paddingTop: 20,
+    },
   },
   fields: {
     display: "flex",
@@ -96,9 +100,16 @@ const AddPost = () => {
 
   return (
     <div className={classes.root}>
+      <Helmet>
+        <title>Add Post | Singi Media</title>
+        <meta
+          name="description"
+          content="Singi Media PWA is a platform for sharing GitHub code on the web. It is a single page application built in React with a bunch of other libraries that make a modern web application. Add post."
+        />
+      </Helmet>
       <Card elevation={5} className={classes.card}>
         <CardContent className={classes.fields}>
-          <Typography variant="h4">PostCreator 3000</Typography>
+          <Typography variant="h4">Create Post</Typography>
           <TextField
             label="Title"
             value={values.title}
