@@ -77,7 +77,7 @@ const Post = ({
   const userInfo = useSelector(selectUser);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/post/${id}`);
+    navigator.clipboard.writeText(`https://singi-media.web.app/post/${id}`);
     enqueueSnackbar(`Copied to Clipboard!`, {
       variant: `success`,
     });

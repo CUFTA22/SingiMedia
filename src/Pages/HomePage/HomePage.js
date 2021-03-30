@@ -76,6 +76,7 @@ const HomePage = () => {
         </>
       ) : (
         <>
+          {/* It sometimes flashes pepe even when theres no error */}
           <Pepe />
           <Typography color="textSecondary" variant="h3">
             Failed to load posts

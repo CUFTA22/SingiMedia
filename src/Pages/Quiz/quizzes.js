@@ -44,4 +44,14 @@ export const quizzes = [
   //   diff: "Extreme",
   //   title: "Database Test",
   // },
+  // {
+  //   icon: "alg",
+  //   diff: "Interview",
+  //   title: "Algorithm",
+  // },
+  // {
+  //   icon: "sys",
+  //   diff: "Interview",
+  //   title: "System Design",
+  // },
 ];

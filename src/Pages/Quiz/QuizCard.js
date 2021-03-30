@@ -48,6 +48,9 @@ const useStyles = makeStyles((theme) => ({
   extreme: {
     color: theme.palette.info.main,
   },
+  interview: {
+    color: theme.palette.secondary.light,
+  },
 }));
 
 const QuizCard = ({ icon, diff, title }) => {
@@ -76,7 +79,9 @@ const QuizCard = ({ icon, diff, title }) => {
               ? classes.medium
               : diff === "Hard"
               ? classes.hard
-              : classes.extreme
+              : diff === "Extreme"
+              ? classes.extreme
+              : classes.interview
           }
         >
           {diff}

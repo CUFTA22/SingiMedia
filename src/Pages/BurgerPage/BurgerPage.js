@@ -3,13 +3,17 @@ import React from "react";
 import BurgerCreator from "./BurgerCreator";
 import BurgerDisplay from "./BurgerDisplay";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     margin: "90px auto 0",
     width: "100%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column-reverse",
+      paddingBottom: 60,
+    },
   },
 }));
 

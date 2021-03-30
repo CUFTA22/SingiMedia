@@ -19,7 +19,7 @@ import {
   selectPrice,
 } from "../../redux/burger/burgerSlice";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     margin: "100px auto 50px",
     width: 500,
@@ -27,6 +27,9 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
   },
   media: {
     background: "linear-gradient(-60deg, #ff5858 0%, #f09819 100%)",

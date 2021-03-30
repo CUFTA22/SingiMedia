@@ -5,9 +5,7 @@ import {
   Button,
   CircularProgress,
   Fab,
-  fade,
   IconButton,
-  InputBase,
   makeStyles,
   Toolbar,
   Typography,
@@ -17,7 +15,6 @@ import Avatar from "@material-ui/core/Avatar";
 import PersonAddRoundedIcon from "@material-ui/icons/PersonAddRounded";
 import MenuIcon from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
-import SearchIcon from "@material-ui/icons/Search";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -26,6 +23,7 @@ import {
   selectUser,
 } from "../../redux/user/userSlice";
 import DrawerComp from "../DrawerComp/DrawerComp";
+import SearchBar from "../SearchBar/SearchBar";
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -97,43 +95,6 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  search: {
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.1),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "auto",
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inputRoot: {
-    color: "inherit",
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
   title: {
     cursor: "pointer",
   },
@@ -174,19 +135,7 @@ const Header = () => {
             <Typography className={classes.title} variant="h6" noWrap>
               <Link to="/">SingiMedia</Link>
             </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ "aria-label": "search" }}
-              />
-            </div>
+            <SearchBar />
           </div>
 
           <div className={classes.grow} />
@@ -209,10 +158,10 @@ const Header = () => {
                     history.push(`/user/${userInfo?.displayName}`);
                   }}
                   src={
-                    require(`../../assets/avatars/${userInfo.avatar}.svg`)
+                    require(`../../assets/avatars/${userInfo?.avatar}.svg`)
                       .default
                   }
-                  alt={`SingiMedia profile avatar`}
+                  alt={`${userInfo?.displayName}'s profile avatar`}
                 />
               </StyledBadge>
             ) : (
@@ -225,14 +174,17 @@ const Header = () => {
           </div>
 
           <div className={classes.forMobile}>
-            <Fab
-              onClick={() => history.push("/add-post")}
-              color="primary"
-              aria-label="add"
-              className={classes.fabButton}
-            >
-              <AddIcon />
-            </Fab>
+            {isAuthenticated ? (
+              <Fab
+                onClick={() => history.push("/add-post")}
+                color="primary"
+                aria-label="add"
+                className={classes.fabButton}
+              >
+                <AddIcon />
+              </Fab>
+            ) : null}
+
             {userIsLoading ? (
               <CircularProgress size="30px" />
             ) : isAuthenticated ? (

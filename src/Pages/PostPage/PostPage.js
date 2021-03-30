@@ -128,15 +128,37 @@ const PostPage = () => {
       )
       .then((res) => {
         setStarred(!starred);
+        enqueueSnackbar(`${res.data.message}`, {
+          variant: `success`,
+        });
       });
   };
 
-  const toggleBook = () => {
-    setBooked(!booked);
+  const toggleSave = () => {
+    axiosFetch
+      .post(
+        "/posts/savePost",
+        {
+          postId: post._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setBooked(!booked);
+        enqueueSnackbar(`${res.data.message}`, {
+          variant: `success`,
+        });
+      });
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/post/${post._id}`);
+    navigator.clipboard.writeText(
+      `https://singi-media.web.app/post/${post._id}`
+    );
     enqueueSnackbar(`Copied to Clipboard!`, {
       variant: `success`,
     });
@@ -173,6 +195,9 @@ const PostPage = () => {
         setIcon(require(`../../assets/postIcons/${res.data.lang}.svg`));
         if (res.data.usersStar.indexOf(userInfo?.displayName) !== -1) {
           setStarred(true);
+        }
+        if (res.data.usersSave.indexOf(userInfo?.displayName) !== -1) {
+          setBooked(true);
         }
       })
       .catch((err) => {
@@ -238,7 +263,7 @@ const PostPage = () => {
               {isAuthenticated ? (
                 <>
                   {" "}
-                  <IconButton onClick={toggleBook}>
+                  <IconButton onClick={toggleSave}>
                     {!booked ? (
                       <BookmarkBorderIcon />
                     ) : (

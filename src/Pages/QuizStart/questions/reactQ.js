@@ -213,11 +213,14 @@ const react = [
   },
   {
     question:
-      "Keys are given to a list of elements in react. These keys should be -",
-    a1: { a: "Do not requires to be unique.", T: false },
-    a2: { a: "Unique in the DOM", T: false },
-    a3: { a: "Unique among the siblings only", T: true },
-    a4: { a: "Unique among the siblings only, and must be a number", T: false },
+      "Keys are given to a list of elements in react. These keys should -",
+    a1: { a: "It isn't required for keys to be unique.", T: false },
+    a2: { a: "Be unique in the DOM", T: false },
+    a3: { a: "Be unique among the siblings only", T: true },
+    a4: {
+      a: "Be unique among the siblings only, and must be a number",
+      T: false,
+    },
   },
   {
     question:
@@ -687,6 +690,38 @@ const react = [
     a2: { a: "There's an error in lines 5 and 8.", T: false },
     a3: { a: "There's an error in line 6.", T: false },
     a4: { a: "There's an error in line 7.", T: true },
+  },
+  {
+    code: `
+    // Analyze code
+    const MyComponent = (props) => {
+      const dispatch = useDispatch();
+      const addIngredient = (prop) => {
+        dispatch( addOne( name: prop ) );
+      };
+      ...
+    }
+`,
+    a1: { a: "There's an error in line 3.", T: false },
+    a2: { a: "There's an error in lines 5.", T: false },
+    a3: { a: "There's an error in line 6.", T: true },
+    a4: { a: "There's no error in the code.", T: false },
+  },
+  {
+    code: `
+    // IconButton and Remove icon come from Material-UI
+    // Analyze code
+    <IconButton
+      onClick={() => removeIngredient("sauce")}
+      disabled={ingredients.find((val) => val === "sauce") ? false : true}
+    >
+      <RemoveIcon />
+    </IconButton>
+`,
+    a1: { a: "There's an error in line 4.", T: false },
+    a2: { a: "There's an error in lines 5.", T: false },
+    a3: { a: "There's an error in line 6.", T: false },
+    a4: { a: "There's no error in the code.", T: true },
   },
   {
     code: `

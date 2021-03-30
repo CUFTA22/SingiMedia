@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
+import SearchPage from "../Pages/SearchPage/SearchPage";
 import { selectIsAuthenticated } from "../redux/user/userSlice";
 
 const HomePage = lazy(() => import("../Pages/HomePage/HomePage"));
@@ -25,6 +26,7 @@ const Routes = () => {
       <Route exact path="/burger" component={BurgerPage} />
 
       <Route path="/post/:id" component={PostPage} />
+      <Route path="/search/:query" component={SearchPage} />
       <Route path="/user/:displayName" component={ProfilePage} />
 
       <Route

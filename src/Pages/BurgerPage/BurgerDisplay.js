@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { selectIngredients } from "../../redux/burger/burgerSlice";
 import BurgerIngredient from "./BurgerIngredient";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     margin: "20px auto 50px",
     width: 500,
@@ -12,6 +12,9 @@ const useStyles = makeStyles(() => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      width: "90%",
+    },
   },
   text: {
     margin: "10px 0",

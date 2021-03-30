@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import ProfilePostsUser from "../../Components/ProfilePostsUser/ProfilePostsUser";
 import AvatarModal from "../../Components/AvatarModal/AvatarModal";
 import { ReactComponent as Verified } from "../../assets/check.svg";
+import ProfilePostsSaved from "../../Components/ProfilePostsSaved/ProfilePostsSaved";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -206,7 +207,7 @@ const ProfilePage = () => {
             <ProfilePostsUser />
           </TabPanel>
           <TabPanel className={classes.w100} value={value} index={1}>
-            Item Two
+            <ProfilePostsSaved />
           </TabPanel>
         </>
       )}

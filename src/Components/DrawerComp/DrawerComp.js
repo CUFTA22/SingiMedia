@@ -9,6 +9,7 @@ import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import Brightness2Icon from "@material-ui/icons/Brightness2";
+import CasinoIcon from "@material-ui/icons/Casino";
 import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
 import SchoolRoundedIcon from "@material-ui/icons/SchoolRounded";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
@@ -138,6 +139,13 @@ const DrawerComp = ({ toggleDrawer, state }) => {
               <FastfoodIcon />
             </ListItemIcon>
             <ListItemText primary={"Burger Builder"} />
+          </ListItem>
+
+          <ListItem onClick={() => history.push("/casino")} button>
+            <ListItemIcon>
+              <CasinoIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Casino"} />
           </ListItem>
 
           <Divider />
