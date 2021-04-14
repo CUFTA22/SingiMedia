@@ -46,7 +46,7 @@ const Routes = () => {
       />
       <Route
         exact
-        path="/earn-badge"
+        path="/testus"
         render={() => (!isAuthenticated ? <Redirect to="/" /> : <QuizPage />)}
       />
       <Route

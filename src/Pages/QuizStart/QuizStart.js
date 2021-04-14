@@ -4,7 +4,9 @@ import {
   ListItemText,
   makeStyles,
   Paper,
+  Button,
   Typography,
+  Checkbox,
 } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -29,7 +31,7 @@ const useStyles = makeStyles({
     width: 800,
     maxWidth: "95%",
     height: "auto",
-    padding: "50px 0",
+    padding: "50px 0 35px 0",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -48,16 +50,24 @@ const useStyles = makeStyles({
     right: 14,
     fontWeight: 600,
   },
+  submitButton: {
+    marginTop: 20,
+  },
+  selectedAnswer: {
+    border: "2px solid #3F51B5",
+  },
 });
 
 const Quiz = () => {
   const classes = useStyles();
   const params = useParams();
-  const history = useHistory(selectAccessToken);
+  const history = useHistory();
   const token = useSelector(selectAccessToken);
   const { enqueueSnackbar } = useSnackbar();
+
   const [allQuestions, setAllQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState("");
   const [counter, setCounter] = useState(0);
   const [score, setScore] = useState(0);
 
@@ -70,7 +80,7 @@ const Quiz = () => {
         e.clientX >= window.innerWidth ||
         e.clientY >= window.innerHeight
       ) {
-        history.push("/earn-badge");
+        history.push("/testus");
         enqueueSnackbar(`Test Failed | No cheating!`, {
           variant: `error`,
         });
@@ -99,27 +109,28 @@ const Quiz = () => {
   const submitAnswer = (a) => {
     if (counter === 15) return;
 
-    if (currentQuestion[`${a}`].T) setScore(score + 1);
+    if (a && currentQuestion[`${a}`].T) setScore(score + 1);
 
     setCurrentQuestion(allQuestions[counter + 1]);
+    setSelectedAnswer("");
     setCounter(counter + 1);
   };
 
   const outOfTime = () => {
-    history.push("/earn-badge");
+    history.push("/testus");
     enqueueSnackbar(`Test Failed | Out of Time!`, {
       variant: `error`,
     });
   };
   const halfOfTime = () => {
-    enqueueSnackbar(`2:30 Minutes Remaining!`, {
+    enqueueSnackbar(`7:30 Minutes Remaining!`, {
       variant: `warning`,
     });
   };
 
   const getResults = useCallback(() => {
     if (score > 14) {
-      history.push("/earn-badge");
+      history.push("/testus");
       axiosFetch
         .post(
           "/quiz/success",
@@ -143,7 +154,7 @@ const Quiz = () => {
           });
         });
     } else {
-      history.push("/earn-badge");
+      history.push("/testus");
       enqueueSnackbar(`Test Failed | ${score}/15 points!`, {
         variant: `error`,
       });
@@ -184,11 +195,11 @@ const Quiz = () => {
         <Typography className={classes.count}>{counter + 1}/15</Typography>
         <div className={classes.timer}>
           <Timer
-            initialTime={300000}
+            initialTime={900000}
             direction="backward"
             checkpoints={[
               { time: 0, callback: () => outOfTime() },
-              { time: 150000, callback: () => halfOfTime() },
+              { time: 450000, callback: () => halfOfTime() },
             ]}
           >
             <>
@@ -208,7 +219,7 @@ const Quiz = () => {
                 ? "jsx"
                 : params.subject === "python"
                 ? "python"
-                : ""
+                : "jsx"
             }
             style={vscDarkPlus}
           >
@@ -220,19 +231,31 @@ const Quiz = () => {
           className={classes.answerRow}
           aria-label="main mailbox folders"
         >
-          <ListItem onClick={() => submitAnswer("a1")} button>
-            <ListItemText primary={`A. ${currentQuestion?.a1.a}`} />
+          <ListItem onClick={() => setSelectedAnswer("a1")} button>
+            <Checkbox color="primary" checked={selectedAnswer === "a1"} />
+            <ListItemText primary={`${currentQuestion?.a1.a}`} />
           </ListItem>
-          <ListItem onClick={() => submitAnswer("a2")} button>
-            <ListItemText primary={`B. ${currentQuestion?.a2.a}`} />
+          <ListItem onClick={() => setSelectedAnswer("a2")} button>
+            <Checkbox color="primary" checked={selectedAnswer === "a2"} />
+            <ListItemText primary={`${currentQuestion?.a2.a}`} />
           </ListItem>
-          <ListItem onClick={() => submitAnswer("a3")} button>
-            <ListItemText primary={`C. ${currentQuestion?.a3.a}`} />
+          <ListItem onClick={() => setSelectedAnswer("a3")} button>
+            <Checkbox color="primary" checked={selectedAnswer === "a3"} />
+            <ListItemText primary={`${currentQuestion?.a3.a}`} />
           </ListItem>
-          <ListItem onClick={() => submitAnswer("a4")} button>
-            <ListItemText primary={`D. ${currentQuestion?.a4.a}`} />
+          <ListItem onClick={() => setSelectedAnswer("a4")} button>
+            <Checkbox color="primary" checked={selectedAnswer === "a4"} />
+            <ListItemText primary={`${currentQuestion?.a4.a}`} />
           </ListItem>
         </List>
+        <Button
+          className={classes.submitButton}
+          onClick={() => submitAnswer(selectedAnswer)}
+          color="primary"
+          variant="contained"
+        >
+          Submit Answer
+        </Button>
       </Paper>
     </div>
   );

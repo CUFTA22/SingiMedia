@@ -78,7 +78,7 @@ const DrawerComp = ({ toggleDrawer, state }) => {
             <ListItemIcon>
               <SingiLogo className={classes.logo} />
             </ListItemIcon>
-            <ListItemText primary={"Singi Media POC"} />
+            <ListItemText primary={"Singi Media"} />
           </ListItem>
 
           <Divider />
@@ -112,7 +112,7 @@ const DrawerComp = ({ toggleDrawer, state }) => {
           ) : null}
 
           {isAuthenticated ? (
-            <ListItem onClick={() => history.push("/earn-badge")} button>
+            <ListItem onClick={() => history.push("/testus")} button>
               <ListItemIcon>
                 <EmojiEventsIcon />
               </ListItemIcon>

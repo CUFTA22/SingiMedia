@@ -131,8 +131,8 @@ const SignIn = () => {
       })
       .catch((err) => {
         setValues({ ...values, loading: false });
-        enqueueSnackbar(`${err.response.data.message}`, {
-          variant: `${err.response.data.variant}`,
+        enqueueSnackbar(`${err.response?.data.message}`, {
+          variant: `${err.response?.data.variant}`,
         });
       });
   };
